@@ -33,7 +33,7 @@ export default function Page() {
             Offentliga upphandlingar • Upphandling bevakning • Ramavtal
           </p>
           <h1 className="new-home-h1 text-balance">
-            Sök offentliga upphandlingar i Sverige
+            Sök offentliga upphandlingar
           </h1>
           <p className="new-page-paragraph mt-4 max-w-3xl mx-auto">
             Procurdo gör det enkelt att hitta aktuella upphandlingar, bevaka nya anbud och utforska ramavtal. Kom igång gratis och börja söka upphandlingar idag.
