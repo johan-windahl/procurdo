@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Suspense } from "react";
 import Analytics from "@/components/app/Analytics";
 import { Inter, Inconsolata } from "next/font/google";
 import "./globals.css";
@@ -73,7 +74,11 @@ export default function RootLayout({
           </>
         ) : null}
         {/* SPA route change tracking */}
-        {isProd && GA_ID ? <Analytics /> : null}
+        {isProd && GA_ID ? (
+          <Suspense fallback={null}>
+            <Analytics />
+          </Suspense>
+        ) : null}
         {children}
       </body>
     </html>
