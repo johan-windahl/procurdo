@@ -96,9 +96,9 @@ export default function SearchPageClient() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 py-12">
-      <h1 className="text-3xl font-semibold tracking-tight">Sök upphandlingar</h1>
+      <h1 className="text-3xl font-semibold tracking-tight">Sök upphandlingar och ramavtal</h1>
       <p className="mt-2 text-muted-foreground max-w-2xl">
-        Sök och filtrera offentliga upphandlingar. Välj CPV-koder, fritext, datum och plats.
+        Sök och filtrera offentliga upphandlingar och ramavtal. Hitta aktuella upphandlingar med CPV-koder, fritext, datum och plats.
       </p>
       <div className="mt-8">
         <SearchForm onSearch={onSubmit} initial={initialFromParams} />
@@ -115,4 +115,3 @@ export default function SearchPageClient() {
     </div>
   );
 }
-

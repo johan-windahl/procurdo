@@ -4,24 +4,32 @@ import { Suspense } from "react";
 import { buildWebsiteJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Sök upphandlingar",
+  title: "Sök upphandlingar och ramavtal",
   description:
-    "Sök och filtrera offentliga upphandlingar i Sverige. Hitta aktuella upphandlingar och ramavtal.",
+    "Sök och filtrera offentliga upphandlingar gratis. Hitta aktuella upphandlingar och ramavtal med CPV-koder, fritext, datum och plats.",
+  keywords: [
+    "sök upphandling",
+    "offentliga upphandlingar",
+    "offentliga upphandlingar gratis",
+    "aktuella upphandlingar",
+    "ramavtal",
+    "sök ramavtal",
+  ],
   alternates: {
     canonical: "/sv-se/sok-upphandling",
   },
   openGraph: {
-    title: "Sök upphandlingar",
+    title: "Sök upphandlingar och ramavtal",
     description:
-      "Filtrera upphandlingar på CPV-koder, fritext, datum och plats.",
+      "Filtrera upphandlingar och ramavtal på CPV-koder, fritext, datum och plats.",
     url: "https://www.procurdo.com/sv-se/sok-upphandling",
     siteName: "Procurdo",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sök upphandlingar",
+    title: "Sök upphandlingar och ramavtal",
     description:
-      "Filtrera upphandlingar på CPV-koder, fritext, datum och plats.",
+      "Filtrera upphandlingar och ramavtal på CPV-koder, fritext, datum och plats.",
   },
 };
 

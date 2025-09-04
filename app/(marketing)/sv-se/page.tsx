@@ -4,9 +4,20 @@ import { Button } from "@/components/ui/button";
 import { buildWebsiteJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Offentliga upphandlingar i Sverige",
+  title: "Offentliga upphandlingar i Sverige – Gratis sök",
   description:
-    "Sök offentliga upphandlingar, bevaka aktuella upphandlingar och hitta ramavtal. Gratis att komma igång och enkelt att filtrera på kategori och myndighet.",
+    "Sök offentliga upphandlingar gratis. Filtrera och bevaka aktuella upphandlingar och ramavtal – enkelt att komma igång.",
+  keywords: [
+    "offentlig upphandling",
+    "offentliga upphandlingar",
+    "upphandling",
+    "sök upphandling",
+    "offentliga upphandlingar gratis",
+    "aktuella upphandlingar",
+    "upphandling bevakning",
+    "ramavtal",
+    "sök ramavtal",
+  ],
   alternates: {
     canonical: "/sv-se",
   },
@@ -30,17 +41,18 @@ export default function Page() {
         </div>
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-20 md:py-28 text-center">
           <p className="mx-auto inline-flex items-center gap-2 rounded-full border bg-white/70 px-3 py-1 text-xs text-muted-foreground">
-            Offentliga upphandlingar • Upphandling bevakning • Ramavtal
+            Offentliga upphandlingar • Upphandling bevakning • Sök ramavtal
           </p>
-          <h1 className="new-home-h1 text-balance">
-            Sök offentliga upphandlingar
-          </h1>
+          <h1 className="new-home-h1 text-balance">Sök offentliga upphandlingar gratis</h1>
           <p className="new-page-paragraph mt-4 max-w-3xl mx-auto">
-            Procurdo gör det enkelt att hitta aktuella upphandlingar, bevaka nya anbud och utforska ramavtal. Kom igång gratis och börja söka upphandlingar idag.
+            Procurdo gör det enkelt att hitta aktuella upphandlingar, bevaka nya anbud och söka ramavtal inom offentlig upphandling. Det är gratis att söka – börja med din första upphandling redan idag.
           </p>
           <div className="mt-10 flex items-center justify-center gap-3">
             <Link href="/sv-se/sok-upphandling">
               <Button size="lg">Sök upphandlingar</Button>
+            </Link>
+            <Link href="/sv-se/sok-upphandling?q=ramavtal" className="text-sm font-medium underline-offset-4 hover:underline">
+              Sök ramavtal
             </Link>
             <a href="#funktioner" className="text-sm font-medium underline-offset-4 hover:underline">
               Läs mer
@@ -54,19 +66,20 @@ export default function Page() {
           <div className="rounded-lg border p-6">
             <h3 className="text-lg font-semibold">Sök upphandling</h3>
             <p className="mt-2 text-sm text-muted-foreground">
-              Filtrera på myndighet, kategori och ort. Hitta offentliga upphandlingar och ramavtal på sekunder.
+              Filtrera på CPV-kod, fritext och plats. Hitta offentliga upphandlingar och sök ramavtal på sekunder.
             </p>
           </div>
           <div className="rounded-lg border p-6">
             <h3 className="text-lg font-semibold">Upphandling bevakning</h3>
             <p className="mt-2 text-sm text-muted-foreground">
               Spara sökningar och få aviseringar. Missa aldrig en aktuell upphandling.
+              (Kommer snart)
             </p>
           </div>
           <div className="rounded-lg border p-6">
             <h3 className="text-lg font-semibold">Offentliga upphandlingar gratis</h3>
             <p className="mt-2 text-sm text-muted-foreground">
-              Kom igång utan kostnad. Testa funktioner och se hur Procurdo kan hjälpa dig att vinna fler anbud.
+              Kom igång utan kostnad. Testa funktioner för att söka och bevaka upphandlingar och se hur Procurdo kan hjälpa dig att vinna fler anbud.
             </p>
           </div>
         </div>
@@ -78,7 +91,7 @@ export default function Page() {
           <ul className="mt-4 grid gap-3 text-sm text-muted-foreground md:grid-cols-2">
             <li>• Täckning av offentliga upphandlingar i hela Sverige</li>
             <li>• Snabb sökfunktion för upphandlingar och ramavtal</li>
-            <li>• Enkelt att analysera och bevaka upphandlingar</li>
+            <li>• Enkelt att filtrera, analysera och bevaka upphandlingar</li>
             <li>• Byggd för leverantörer som vill växa via offentlig sektor</li>
           </ul>
         </div>
