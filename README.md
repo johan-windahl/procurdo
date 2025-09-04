@@ -34,3 +34,11 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Analytics
+
+Google Analytics 4 is integrated via `next/script` and a lightweight client component for SPA route changes.
+
+- Env var: set `NEXT_PUBLIC_GA_ID` (default fallback: `G-2KT03XRWKB`).
+- Production-only: scripts run when `NODE_ENV=production`.
+- Files: `app/layout.tsx`, `components/app/Analytics.tsx`, `lib/analytics.ts`.

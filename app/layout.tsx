@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Script from "next/script";
+import Analytics from "@/components/app/Analytics";
 import { Inter, Inconsolata } from "next/font/google";
 import "./globals.css";
 
@@ -47,11 +49,31 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const isProd = process.env.NODE_ENV === "production";
+  const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-2KT03XRWKB";
   return (
     <html lang="sv-SE">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        {isProd && GA_ID ? (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="gtag-init" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${GA_ID}', { send_page_view: false });
+              `}
+            </Script>
+          </>
+        ) : null}
+        {/* SPA route change tracking */}
+        {isProd && GA_ID ? <Analytics /> : null}
         {children}
       </body>
     </html>
