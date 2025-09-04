@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Suspense } from "react";
 import Analytics from "@/components/app/Analytics";
+import CookieConsent from "@/components/app/CookieConsent";
 import { Inter, Inconsolata } from "next/font/google";
 import "./globals.css";
 
@@ -59,16 +60,47 @@ export default function RootLayout({
       >
         {isProd && GA_ID ? (
           <>
+            {/* Consent Mode default: deny until user choice */}
+            <Script id="consent-default" strategy="beforeInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);} 
+                gtag('consent', 'default', {
+                  'ad_storage': 'denied',
+                  'ad_user_data': 'denied',
+                  'ad_personalization': 'denied',
+                  'analytics_storage': 'denied',
+                  'functionality_storage': 'denied',
+                  'personalization_storage': 'denied',
+                  'security_storage': 'granted',
+                  'wait_for_update': 500
+                });
+              `}
+            </Script>
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
               strategy="afterInteractive"
             />
             <Script id="gtag-init" strategy="afterInteractive">
               {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
                 gtag('config', '${GA_ID}', { send_page_view: false });
+              `}
+            </Script>
+            {/* Restore saved consent as soon as possible */}
+            <Script id="consent-restore" strategy="afterInteractive">
+              {`
+                (function(){
+                  try {
+                    var raw = localStorage.getItem('cookie-consent-v2');
+                    if (raw) {
+                      var state = JSON.parse(raw);
+                      window.dataLayer = window.dataLayer || [];
+                      function gtag(){dataLayer.push(arguments);} 
+                      gtag('consent', 'update', state);
+                    }
+                  } catch (e) {}
+                })();
               `}
             </Script>
           </>
@@ -79,6 +111,8 @@ export default function RootLayout({
             <Analytics />
           </Suspense>
         ) : null}
+        {/* Cookie Banner */}
+        {isProd ? <CookieConsent /> : null}
         {children}
       </body>
     </html>
