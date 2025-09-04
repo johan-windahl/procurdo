@@ -5,6 +5,7 @@ type NavItem = { label: string; href: string };
 
 const nav: NavItem[] = [
   { label: "Funktioner", href: "/sv-se#funktioner" },
+  { label: "FAQ", href: "/sv-se/faq" },
   { label: "Kontakt", href: "/sv-se#kontakt" },
 ];
 
