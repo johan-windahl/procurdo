@@ -42,7 +42,7 @@ export default function CookieConsent() {
             marketing. You can accept or reject non-essential cookies.
           </p>
           <div className="flex gap-2 justify-end">
-            <Button variant="secondary" onClick={() => handleChoice("reject")}> 
+            <Button variant="outline" onClick={() => handleChoice("reject")}>
               Reject all
             </Button>
             <Button onClick={() => handleChoice("accept")}>Accept all</Button>

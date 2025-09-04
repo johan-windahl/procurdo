@@ -84,12 +84,11 @@ export function updateConsent(state: ConsentState) {
   if (typeof window.gtag !== "function") {
     // create minimal stub to queue if not present
     if (!window.dataLayer) window.dataLayer = [];
-    window.gtag = function () {
-      // @ts-expect-error - variadic push
-      window.dataLayer.push(arguments);
-    } as unknown as Window["gtag"];
+    window.gtag = ((...args: unknown[]) => {
+      // push the arguments tuple as one entry like the native snippet does
+      (window.dataLayer as unknown[]).push(args as unknown);
+    }) as Window["gtag"];
   }
   window.gtag("consent", "update", state as unknown as Record<string, string>);
   storeConsent(state);
 }
-
