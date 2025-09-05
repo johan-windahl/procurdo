@@ -4,14 +4,19 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import SearchForm, { type Filters } from "@/components/marketing/SearchForm";
 import ResultsList, { type Notice } from "@/components/marketing/ResultsList";
+import Spinner from "@/components/ui/spinner";
 
 const defaultFilters: Filters = {
   cpvs: [],
   text: "",
   dateFrom: "",
+  deadlineTo: "",
   country: "",
   city: "",
   status: "ongoing",
+  noticeType: "",
+  valueMin: "",
+  valueMax: "",
 };
 
 export default function SearchPageClient() {
@@ -22,6 +27,9 @@ export default function SearchPageClient() {
   const [results, setResults] = useState<Notice[]>([]);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const limit = 20;
 
   const initialFromParams = useMemo<Partial<Filters>>(() => {
@@ -32,8 +40,12 @@ export default function SearchPageClient() {
       cpvs,
       text: searchParams.get("q") || "",
       dateFrom: searchParams.get("from") || "",
+      deadlineTo: searchParams.get("to") || "",
       country: searchParams.get("country") || "",
       city: searchParams.get("city") || "",
+      noticeType: searchParams.get("type") || "",
+      valueMin: searchParams.get("min") || "",
+      valueMax: searchParams.get("max") || "",
       status: (searchParams.get("status") as Filters["status"]) || "ongoing",
     };
   }, [searchParams]);
@@ -50,9 +62,13 @@ export default function SearchPageClient() {
       if (f.cpvs.length) params.set("cpv", f.cpvs.join(","));
       if (f.text) params.set("q", f.text);
       if (f.dateFrom) params.set("from", f.dateFrom);
+      if (f.deadlineTo) params.set("to", f.deadlineTo);
       if (f.country) params.set("country", f.country);
       if (f.city) params.set("city", f.city);
-      if (f.status) params.set("status", f.status);
+      if (f.noticeType) params.set("type", f.noticeType);
+      if (f.valueMin) params.set("min", String(f.valueMin));
+      if (f.valueMax) params.set("max", String(f.valueMax));
+      if (f.status && f.status !== "ongoing") params.set("status", f.status);
       if (p > 1) params.set("page", String(p));
       const qs = params.toString();
       router.replace(qs ? `?${qs}` : "");
@@ -62,6 +78,9 @@ export default function SearchPageClient() {
 
   const runSearch = useCallback(
     async (f: Filters, p = 1) => {
+      setHasSearched(true);
+      setLoading(true);
+      setError(null);
       setPage(p);
       updateUrl(f, p);
       const res = await fetch(`/api/search?page=${p}`, {
@@ -69,25 +88,37 @@ export default function SearchPageClient() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(f),
       });
-      const data = await res.json();
-      setResults(data.items || []);
-      setTotal(Number(data.total || 0));
-      if (p > 1) window.scrollTo({ top: 0, behavior: "smooth" });
+      try {
+        const data = await res.json();
+        if (!res.ok || data?.error) {
+          const detail = data?.unsupportedValue && data?.parameterName
+            ? ` (${data.parameterName}: ${data.unsupportedValue})`
+            : "";
+          setError(`${data?.message || data?.error || 'Ett fel inträffade vid sökning'}${detail}`);
+          setResults([]);
+          setTotal(0);
+          return;
+        }
+        setResults(data.items || []);
+        setTotal(Number(data.total || 0));
+        if (p > 1) window.scrollTo({ top: 0, behavior: "smooth" });
+      } finally {
+        setLoading(false);
+      }
     },
     [updateUrl]
   );
 
-  // Auto-search if query params prefilled
+  // Only auto-search when explicit query params exist in the URL
   useEffect(() => {
-    const hasAny =
-      filters.cpvs.length ||
-      filters.text ||
-      filters.dateFrom ||
-      filters.country ||
-      filters.city;
-    if (hasAny) runSearch(filters, page);
+    if (!searchParams) return;
+    const hasQueryParams = searchParams.toString().length > 0;
+    if (hasQueryParams) {
+      const p = Number(searchParams.get("page") || "1") || 1;
+      runSearch({ ...filters, ...initialFromParams }, p);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [searchParams]);
 
   const onSubmit = (f: Filters) => {
     setFilters(f);
@@ -97,13 +128,21 @@ export default function SearchPageClient() {
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 py-12">
       <h1 className="text-3xl font-semibold tracking-tight">Sök upphandlingar och ramavtal</h1>
-      <p className="mt-2 text-muted-foreground max-w-2xl">
+      <p className="mt-2 text-muted-foreground">
         Sök och filtrera offentliga upphandlingar och ramavtal. Hitta aktuella upphandlingar med CPV-koder, fritext, datum och plats.
       </p>
       <div className="mt-8">
         <SearchForm onSearch={onSubmit} initial={initialFromParams} />
       </div>
-      {results.length > 0 ? (
+      {error ? (
+        <div className="mt-6 rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm">
+          {error}
+        </div>
+      ) : loading ? (
+        <div className="mt-8 flex justify-center">
+          <Spinner size={22} label="Söker upphandlingar..." />
+        </div>
+      ) : results.length > 0 ? (
         <ResultsList
           results={results}
           page={page}
@@ -111,6 +150,8 @@ export default function SearchPageClient() {
           total={total}
           onPage={(p) => runSearch(filters, p)}
         />
+      ) : hasSearched ? (
+        <p className="mt-8 text-sm text-center text-muted-foreground">Inga resultat hittades</p>
       ) : null}
     </div>
   );
