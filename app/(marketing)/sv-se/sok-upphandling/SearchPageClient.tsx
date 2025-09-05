@@ -9,9 +9,13 @@ const defaultFilters: Filters = {
   cpvs: [],
   text: "",
   dateFrom: "",
+  deadlineTo: "",
   country: "",
   city: "",
   status: "ongoing",
+  noticeType: "",
+  valueMin: "",
+  valueMax: "",
 };
 
 export default function SearchPageClient() {
@@ -32,8 +36,12 @@ export default function SearchPageClient() {
       cpvs,
       text: searchParams.get("q") || "",
       dateFrom: searchParams.get("from") || "",
+      deadlineTo: searchParams.get("to") || "",
       country: searchParams.get("country") || "",
       city: searchParams.get("city") || "",
+      noticeType: searchParams.get("type") || "",
+      valueMin: searchParams.get("min") || "",
+      valueMax: searchParams.get("max") || "",
       status: (searchParams.get("status") as Filters["status"]) || "ongoing",
     };
   }, [searchParams]);
@@ -50,8 +58,12 @@ export default function SearchPageClient() {
       if (f.cpvs.length) params.set("cpv", f.cpvs.join(","));
       if (f.text) params.set("q", f.text);
       if (f.dateFrom) params.set("from", f.dateFrom);
+      if (f.deadlineTo) params.set("to", f.deadlineTo);
       if (f.country) params.set("country", f.country);
       if (f.city) params.set("city", f.city);
+      if (f.noticeType) params.set("type", f.noticeType);
+      if (f.valueMin) params.set("min", String(f.valueMin));
+      if (f.valueMax) params.set("max", String(f.valueMax));
       if (f.status) params.set("status", f.status);
       if (p > 1) params.set("page", String(p));
       const qs = params.toString();

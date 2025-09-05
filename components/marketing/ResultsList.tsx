@@ -8,7 +8,13 @@ export type Notice = {
   country?: string;
   documentUrl?: string;
   value?: string;
+  valueCurrency?: string;
   description?: string;
+  classification?: string;
+  contractNature?: string;
+  noticeType?: string;
+  procedureType?: string;
+  frameworkAgreement?: boolean;
 };
 
 type Props = {
@@ -18,6 +24,9 @@ type Props = {
   total: number;
   onPage: (p: number) => void;
 };
+
+import { translateProcedureType, translateNoticeType, translateContractNature } from "@/lib/ted";
+import { formatThousandsSpaces } from "@/lib/utils";
 
 export default function ResultsList({ results, page, limit, total, onPage }: Props) {
   const pages = Math.max(1, Math.ceil(total / limit));
@@ -40,6 +49,21 @@ export default function ResultsList({ results, page, limit, total, onPage }: Pro
                 {r.publicationNumber}
               </span>
             </div>
+            <div className="mt-2 flex flex-wrap gap-2 text-xs">
+              {r.noticeType ? (
+                <span className="inline-flex items-center rounded-full border px-2 py-0.5">
+                  {translateNoticeType(r.noticeType)}
+                </span>
+              ) : null}
+              {r.contractNature ? (
+                <span className="inline-flex items-center rounded-full border px-2 py-0.5">
+                  {translateContractNature(r.contractNature)}
+                </span>
+              ) : null}
+              {r.frameworkAgreement ? (
+                <span className="inline-flex items-center rounded-full border px-2 py-0.5">Ramavtal</span>
+              ) : null}
+            </div>
             <div className="mt-3 grid gap-2 text-sm text-muted-foreground md:grid-cols-2">
               <div>
                 <span className="font-medium text-foreground">Köpare:</span> {r.buyerName}
@@ -52,12 +76,25 @@ export default function ResultsList({ results, page, limit, total, onPage }: Pro
               </div>
               {r.deadlineDate ? (
                 <div>
-                  <span className="font-medium text-foreground">Sista ansökan:</span> {r.deadlineDate}
+                  <span className="font-medium text-foreground">Sista anbudsdag:</span> {r.deadlineDate}
                 </div>
               ) : null}
               {r.value ? (
                 <div>
-                  <span className="font-medium text-foreground">Värde:</span> {r.value}
+                  <span className="font-medium text-foreground">Värde:</span> {(() => {
+                    const n = Number(String(r.value).replace(/\s/g, "").replace(/,/g, "."));
+                    return Number.isFinite(n) ? formatThousandsSpaces(n) : r.value;
+                  })()} {r.valueCurrency || ''}
+                </div>
+              ) : null}
+              {r.classification ? (
+                <div>
+                  <span className="font-medium text-foreground">CPV-kod:</span> {r.classification}
+                </div>
+              ) : null}
+              {r.procedureType ? (
+                <div>
+                  <span className="font-medium text-foreground">Förfarande:</span> {translateProcedureType(r.procedureType)}
                 </div>
               ) : null}
             </div>

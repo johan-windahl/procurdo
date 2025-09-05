@@ -115,6 +115,6 @@ export default function RootLayout({
         {isProd ? <CookieConsent /> : null}
         {children}
       </body>
-    </html>
+      </html>
   );
 }

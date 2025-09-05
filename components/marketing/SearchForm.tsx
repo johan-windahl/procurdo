@@ -4,14 +4,19 @@ import { useState } from "react";
 import CPVSelector from "./CPVSelector";
 import countries from "@/data/countries.json";
 import { Button } from "@/components/ui/button";
+import { formatThousandsSpaces, normalizeNumericInput } from "@/lib/utils";
 
 export type Filters = {
   cpvs: string[];
   text: string;
   dateFrom: string;
+  deadlineTo?: string;
   country: string;
   city: string;
   status: "ongoing" | "completed";
+  noticeType?: string;
+  valueMin?: number | string;
+  valueMax?: number | string;
 };
 
 type Props = {
@@ -23,9 +28,13 @@ const empty: Filters = {
   cpvs: [],
   text: "",
   dateFrom: "",
+  deadlineTo: "",
   country: "",
   city: "",
   status: "ongoing",
+  noticeType: "",
+  valueMin: "",
+  valueMax: "",
 };
 
 export default function SearchForm({ onSearch, initial }: Props) {
@@ -64,6 +73,15 @@ export default function SearchForm({ onSearch, initial }: Props) {
           />
         </div>
         <div className="space-y-1">
+          <label className="block text-sm font-medium">Sista ansökan senast</label>
+          <input
+            type="date"
+            className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+            value={filters.deadlineTo || ""}
+            onChange={(e) => update({ deadlineTo: e.target.value })}
+          />
+        </div>
+        <div className="space-y-1">
           <label className="block text-sm font-medium">Land</label>
           <select
             className="w-full rounded-md border bg-background px-3 py-2 text-sm"
@@ -85,6 +103,43 @@ export default function SearchForm({ onSearch, initial }: Props) {
             value={filters.city}
             onChange={(e) => update({ city: e.target.value })}
             placeholder="Ex. Stockholm"
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="block text-sm font-medium">Annonstyp</label>
+          <select
+            className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+            value={filters.noticeType || ""}
+            onChange={(e) => update({ noticeType: e.target.value })}
+          >
+            <option value="">Alla</option>
+            <option value="Contract Notice">Upphandlingsannons</option>
+            <option value="Prior Information Notice">Förhandsannons</option>
+            <option value="Award Notice">Tilldelningsannons</option>
+          </select>
+        </div>
+        <div className="space-y-1">
+          <label className="block text-sm font-medium">Värde (min)</label>
+          <input
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9 ]*"
+            className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+            value={formatThousandsSpaces(filters.valueMin || "")}
+            onChange={(e) => update({ valueMin: normalizeNumericInput(e.target.value) })}
+            placeholder="10 000"
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="block text-sm font-medium">Värde (max)</label>
+          <input
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9 ]*"
+            className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+            value={formatThousandsSpaces(filters.valueMax || "")}
+            onChange={(e) => update({ valueMax: normalizeNumericInput(e.target.value) })}
+            placeholder="1 000 000"
           />
         </div>
       </div>
@@ -119,4 +174,3 @@ export default function SearchForm({ onSearch, initial }: Props) {
     </form>
   );
 }
-
