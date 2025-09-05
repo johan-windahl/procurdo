@@ -23,15 +23,24 @@ type TEDNotice = {
   'notice-type'?: MaybeLang;
   'procedure-type'?: MaybeLang;
   'framework-agreement'?: MaybeLang;
+  'framework-agreement-lot'?: MaybeLang;
   'description-lot'?: MaybeLang;
   'document-url-lot'?: MaybeLang;
   'document-url-part'?: MaybeLang;
 };
 
+type TEDError = {
+  type?: string;
+  message?: string;
+  parameterName?: string;
+  unsupportedValue?: string;
+  location?: unknown;
+};
+
 type TEDSearchResponse = {
   notices?: TEDNotice[];
   totalNoticeCount?: number | string;
-  error?: { type?: string; message?: string };
+  error?: TEDError;
 };
 
 type Filters = {
@@ -139,11 +148,11 @@ const buildQuery = (f: Filters) => {
   }
   if (f.text) parts.push(`FT ~ (${quote(f.text)})`);
   if (f.dateFrom) parts.push(`publication-date >= ${formatDateForTED(f.dateFrom)}`);
+  else parts.push(`publication-date >= today(-365)`);
   if (f.deadlineTo) parts.push(`deadline-receipt-tender-date-lot <= ${formatDateForTED(f.deadlineTo)}`);
   if (f.country) {
-    const isISO3 = /^[A-Z]{3}$/.test(f.country);
-    // Prefer buyer-country for filtering (aligns with requested fields)
-    parts.push(`buyer-country = ${isISO3 ? f.country : quote(f.country)}`);
+    // Quote country value to avoid parser issues; supports 'SWE' or 'Sweden'
+    parts.push(`buyer-country = ${quote(f.country)}`);
   }
   if (f.city) parts.push(`buyer-city ~ (${quote(f.city)})`);
   if (f.noticeType) parts.push(`notice-type = ${quote(f.noticeType)}`);
@@ -165,13 +174,7 @@ const buildQuery = (f: Filters) => {
   } else if (f.status === "completed") {
     parts.push(`(notice-type IN (can-standard can-social can-desg can-tran))`);
   }
-  // If only status is present and no other constraints, add a reasonable date window
-  const hasOther = parts.some(
-    (p) => !p.startsWith("(notice-type IN ")
-  );
-  if (!hasOther) {
-    parts.push(`publication-date >= today(-60)`);
-  }
+  // We already add a default 1-year window above when no dateFrom is provided.
   return parts.join(" AND ");
 };
 
@@ -199,7 +202,7 @@ export async function POST(req: NextRequest) {
       'buyer-name',
       'buyer-city',
       'buyer-country',
-      'place-of-performance',
+      'place-of-performance-country-lot',
       'links',
       'tender-value',
       'estimated-value-lot',
@@ -223,12 +226,19 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify(payload),
     });
     const json: TEDSearchResponse = await res.json();
-
-    console.log(json);
-    if (json?.error) {
+    if (!res.ok || json?.error) {
+      const err: TEDError = json?.error || {};
       return new Response(
-        JSON.stringify({ items: [], total: 0, error: json.error?.type, message: json.error?.message }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        JSON.stringify({
+          items: [],
+          total: 0,
+          error: err.type || 'QUERY_ERROR',
+          message: err.message || 'Fel vid sökning',
+          parameterName: err.parameterName,
+          unsupportedValue: err.unsupportedValue,
+          location: err.location,
+        }),
+        { status: res.status || 400, headers: { "Content-Type": "application/json" } }
       );
     }
 
@@ -254,12 +264,12 @@ export async function POST(req: NextRequest) {
       const value = estValue || tenderValue || undefined;
       const valueCurrency = estValue ? estCur || undefined : undefined;
       const buyerCountry = extractText(n['buyer-country']);
-      const placeCountry = extractText(n['place-of-performance']) || extractText(n['place-of-performance-country-lot']);
+      const placeCountry = extractText(n['place-of-performance-country-lot']);
       const cpv = extractText(n['classification-cpv']);
       const contractNature = extractText(n['contract-nature']);
       const noticeType = extractText(n['notice-type']);
       const procedureType = extractText(n['procedure-type']);
-      const framework = extractText(n['framework-agreement']);
+      const framework = extractText(n['framework-agreement-lot']) || extractText(n['framework-agreement']);
       return {
         publicationNumber: n["publication-number"] || "",
         publicationDate,
@@ -278,6 +288,15 @@ export async function POST(req: NextRequest) {
         procedureType: procedureType || undefined,
         frameworkAgreement: framework ? framework.toLowerCase() === 'true' || framework === 'yes' : undefined,
       };
+    });
+
+    // Sort by most recent publication date first.
+    // Note: This sorts within the current page of results returned by TED API.
+    items.sort((a, b) => {
+      const da = a.publicationDate || "";
+      const db = b.publicationDate || "";
+      // ISO YYYY-MM-DD lexicographical comparison works for date ordering
+      return db.localeCompare(da);
     });
 
     const total = Number(json?.totalNoticeCount || 0);
