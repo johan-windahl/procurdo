@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { buildWebsiteJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Sök upphandlingar och ramavtal",
+  title: "Hitta upphandlingar och ramavtal gratis",
   description:
     "Sök och filtrera offentliga upphandlingar gratis. Hitta aktuella upphandlingar och ramavtal med CPV-koder, fritext, datum och plats.",
   keywords: [
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     canonical: "/sv-se/sok-upphandling",
   },
   openGraph: {
-    title: "Sök upphandlingar och ramavtal",
+    title: "Hitta upphandlingar och ramavtal gratis",
     description:
       "Filtrera upphandlingar och ramavtal på CPV-koder, fritext, datum och plats.",
     url: "https://www.procurdo.com/sv-se/sok-upphandling",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sök upphandlingar och ramavtal",
+    title: "Hitta upphandlingar och ramavtal gratis",
     description:
       "Filtrera upphandlingar och ramavtal på CPV-koder, fritext, datum och plats.",
   },
