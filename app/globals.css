@@ -138,9 +138,13 @@
   margin-top: 20px;
   margin-bottom: 30px;
   font-family: "GT Walsheim", var(--font-sans), system-ui, sans-serif;
-  font-size: 80px;
+  /* Responsive size to avoid overflow on mobile */
+  font-size: clamp(36px, 10vw, 80px);
   font-weight: 900;
-  line-height: 100%;
+  line-height: 1.05;
+  /* Allow long Swedish words to break gracefully on narrow screens */
+  overflow-wrap: anywhere;
+  hyphens: auto;
 }
 
 .new-page-paragraph {

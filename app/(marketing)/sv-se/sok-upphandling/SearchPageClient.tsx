@@ -127,7 +127,7 @@ export default function SearchPageClient() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 py-12">
-      <h1 className="text-3xl font-semibold tracking-tight">Sök upphandlingar och ramavtal</h1>
+      <h1 className="text-3xl font-semibold tracking-tight">Hitta upphandlingar och ramavtal gratis</h1>
       <p className="mt-2 text-muted-foreground">
         Sök och filtrera offentliga upphandlingar och ramavtal. Hitta aktuella upphandlingar med CPV-koder, fritext, datum och plats.
       </p>
