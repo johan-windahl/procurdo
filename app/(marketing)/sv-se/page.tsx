@@ -69,7 +69,7 @@ export default function Page() {
           <div className="absolute top-40 right-[-100px] h-[420px] w-[420px] rounded-full bg-[#bca3f9] blur-3xl opacity-60 dark:opacity-20" />
           <div className="absolute -bottom-24 left-[-120px] h-[360px] w-[360px] rounded-full bg-[#bcffae] blur-3xl opacity-60 dark:opacity-20" />
         </div>
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-20 md:py-28 text-center">
+        <div className="mx-auto max-w-6xl px-5 sm:px-8 py-20 md:py-28 text-center">
           <p className="mx-auto inline-flex items-center gap-2 rounded-full border bg-white/70 px-3 py-1 text-xs text-muted-foreground">
             Offentliga upphandlingar • Sök ramavtal • Upphandling bevakning
           </p>
@@ -80,9 +80,9 @@ export default function Page() {
             Procurdo gör offentlig upphandling tillgänglig för alla. Procurdo samlar offentliga upphandlingar från hela Sverige på ett ställe. Hitta aktuella upphandlingar, sök ramavtal och upptäck affärsmöjligheter utan kostnad.
           </p>
           <h2 className="sr-only">Sök upphandling enkelt – helt gratis</h2>
-          <div className="mt-10 flex items-center justify-center gap-3">
-            <Link href="/sv-se/sok-upphandling">
-              <Button size="lg">Sök upphandlingar nu</Button>
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-3">
+            <Link href="/sv-se/sok-upphandling" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto whitespace-nowrap">Sök upphandlingar nu</Button>
             </Link>
             <Link
               href="/sv-se/sok-upphandling?q=ramavtal"
@@ -100,7 +100,7 @@ export default function Page() {
         </div>
       </section>
 
-      <section id="funktioner" className="mx-auto max-w-6xl px-4 sm:px-6 py-16 md:py-24">
+      <section id="funktioner" className="mx-auto max-w-6xl px-5 sm:px-8 py-16 md:py-24">
         <h2 className="text-2xl font-semibold tracking-tight text-center mb-10">
           Omfattande databas för offentlig upphandling
         </h2>
@@ -171,7 +171,7 @@ export default function Page() {
         </div>
       </section>
 
-      <section id="kommande-funktioner" className="mx-auto max-w-6xl px-4 sm:px-6 py-16 md:py-24">
+      <section id="kommande-funktioner" className="mx-auto max-w-6xl px-5 sm:px-8 py-16 md:py-24">
         <div className="rounded-xl border p-8">
           <h2 className="text-2xl font-semibold tracking-tight">Fler verktyg på väg</h2>
           <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -214,7 +214,7 @@ export default function Page() {
 
       {/** Priser section intentionally omitted for now */}
 
-      <section id="kontakt" className="mx-auto max-w-6xl px-4 sm:px-6 py-16 md:py-24">
+      <section id="kontakt" className="mx-auto max-w-6xl px-5 sm:px-8 py-16 md:py-24">
         <div className="rounded-xl border p-8">
           <h2 className="text-2xl font-semibold">Har du frågor?</h2>
           <p className="mt-2 text-muted-foreground">
