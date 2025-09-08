@@ -105,9 +105,19 @@ export default function FAQIndexPage() {
               </div>
             </div>
           </Link>
+          <Link href="/sv-se/faq/finns-alla-upphandlingar" className="group rounded-xl border p-6 hover:shadow-sm transition-shadow">
+            <div className="flex items-start gap-4">
+              <div className="h-10 w-10 rounded-lg bg-[#ffe6a7] flex items-center justify-center text-[#8a6200]">🔎</div>
+              <div>
+                <h2 className="text-lg font-semibold group-hover:underline">Finns alla upphandlingar?</h2>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Varför Sverige saknar en komplett samlad databas, och hur annonsering fungerar nationellt och inom EU.
+                </p>
+              </div>
+            </div>
+          </Link>
         </div>
       </section>
     </>
   );
 }
-
