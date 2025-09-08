@@ -118,7 +118,7 @@ export default function AllTendersPage() {
                 <li><strong>e‑Avrop</strong> (20% av marknaden)</li>
                 <li><strong>KommersAnnons.se</strong> (15,5% av marknaden)</li>
                 <li><strong>Konstpool</strong> (minimal användning)</li>
-                <li><strong>Clira Annonsdatabas</strong> (registrerad men ingen användning 2023)</li>
+                <li><strong>Clira Annonsdatabas</strong></li>
               </ul>
 
               <h2>Utreds förbättringar?</h2>
