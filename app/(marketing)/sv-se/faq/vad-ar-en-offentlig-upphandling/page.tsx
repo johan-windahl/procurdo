@@ -98,6 +98,13 @@ export default function WhatIsPublicProcurementPage() {
                 <li>Visa relevanta referenser och möt ska‑krav tydligt.</li>
               </ul>
               <p>
+                Behöver du vägledning i själva anbudet? Läs vår {" "}
+                <Link href="/sv-se/resurser/anbudsskrivning" className="underline">
+                  Anbudsskrivning: komplett guide
+                </Link>
+                .
+              </p>
+              <p>
                 Vill du se aktuella annonser? {" "}
                 <Link href="/sv-se/sok-upphandling" className="underline">Sök upphandlingar</Link>.
               </p>
