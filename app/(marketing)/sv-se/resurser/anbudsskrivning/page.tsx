@@ -138,7 +138,7 @@ export default function Page() {
           Upphandlande myndighet kan ställa krav på ekonomisk och teknisk kapacitet, referenser, kvalitets‑ och miljöledningssystem samt intyg. Det finns också obligatoriska och fakultativa uteslutningsgrunder (exempelvis vissa brott eller allvarliga fel i yrkesutövningen). Beskriv tydligt hur ni uppfyller kraven och bifoga bevis.
         </p>
         <p>
-          Om något tidigare förhållande kan påverka prövningen – beskriv eventuella "self‑cleaning"‑åtgärder (åtgärdsprogram, internkontroller, ersättning) för att visa att risken är undanröjd.
+          Om något tidigare förhållande kan påverka prövningen – beskriv eventuella &quot;self‑cleaning&quot;‑åtgärder (åtgärdsprogram, internkontroller, ersättning) för att visa att risken är undanröjd.
         </p>
       </section>
 

@@ -3,8 +3,7 @@
   Requires dev deps: tsx (or ts-node), drizzle-orm, @neondatabase/serverless, dotenv
 */
 import "dotenv/config";
-import { db } from "@/lib/db";
-import { users } from "@/db/schema";
+// Note: imports removed until we add actual seed logic to avoid lint warnings
 
 async function main() {
   // Example: insert a placeholder user if not present
@@ -20,4 +19,3 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-

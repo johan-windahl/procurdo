@@ -41,7 +41,7 @@ export function buildArticleJsonLd(params: {
     siteName = "Procurdo",
   } = params;
 
-  const data: Record<string, any> = {
+  const data: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     mainEntityOfPage: {
