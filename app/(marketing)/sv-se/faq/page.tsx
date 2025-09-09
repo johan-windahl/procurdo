@@ -83,6 +83,17 @@ export default function FAQIndexPage() {
 
       <section className="mx-auto max-w-6xl px-4 sm:px-6 py-16 md:py-24">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <Link href="/sv-se/faq/vad-ar-den-offentliga-sektorn" className="group rounded-xl border p-6 hover:shadow-sm transition-shadow">
+            <div className="flex items-start gap-4">
+              <div className="h-10 w-10 rounded-lg bg-[#e1f0fb] flex items-center justify-center text-[#0a66c2]">🏛️</div>
+              <div>
+                <h2 className="text-lg font-semibold group-hover:underline">Vad är den offentliga sektorn?</h2>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  En enkel förklaring av vad som ingår i offentlig sektor, hur den finansieras och varför den är viktig.
+                </p>
+              </div>
+            </div>
+          </Link>
           <Link href="/sv-se/faq/vad-ar-en-offentlig-upphandling" className="group rounded-xl border p-6 hover:shadow-sm transition-shadow">
             <div className="flex items-start gap-4">
               <div className="h-10 w-10 rounded-lg bg-[#e1f0fb] flex items-center justify-center text-[#0a66c2]">ℹ️</div>
