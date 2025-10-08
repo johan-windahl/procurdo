@@ -1,7 +1,0 @@
-{
-  "/(marketing)/sv-se/page": "app/(marketing)/sv-se/page.js",
-  "/(marketing)/sv-se/sok-upphandling/page": "app/(marketing)/sv-se/sok-upphandling/page.js",
-  "/api/search/route": "app/api/search/route.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/page": "app/page.js"
-}

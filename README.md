@@ -14,7 +14,8 @@ procurdo/
 │       ├── lib/                # Shared utilities (DB client, helpers)
 │       └── types/              # Shared TypeScript types
 ├── services/                   # Future backend services (Python, Go, etc.)
-└── misc/                       # Miscellaneous files and documentation
+├── docs/                       # Project documentation
+└── misc/                       # Miscellaneous files
 ```
 
 ## Getting Started
@@ -98,18 +99,16 @@ Shared TypeScript package containing:
 
 ## Deployment
 
-### Web App (Vercel)
+See the [deployment documentation](./docs/deployment/) for detailed guides:
 
-The web app is configured for Vercel deployment with monorepo support:
+- [Vercel Deployment Guide](./docs/deployment/vercel-deployment-guide.md) - Complete setup instructions
+- [Edge Runtime Fix](./docs/deployment/vercel-edge-runtime-fix.md) - Troubleshooting Clerk issues
 
-1. Connect your Vercel project to the repository
-2. Set the root directory to `apps/web`
-3. Vercel will use the configuration in `apps/web/vercel.json`
-4. Set environment variables in Vercel dashboard
+**Quick start:**
 
-### Backend Services
-
-Future backend services will be deployed separately (e.g., VPS with Docker).
+1. Set root directory to `apps/web` in Vercel
+2. Configure environment variables
+3. Deploy
 
 ## Adding New Services
 
@@ -132,6 +131,16 @@ Future backend services will be deployed separately (e.g., VPS with Docker).
 - **Database**: Neon PostgreSQL (EU)
 - **Auth**: Clerk
 - **Future Services**: Polyglot microservices on VPS with Docker
+
+## Documentation
+
+All project documentation is in the [`docs/`](./docs/) directory:
+
+- **[Migration Guides](./docs/migration/)** - Monorepo migration, structural changes
+- **[Deployment Guides](./docs/deployment/)** - Vercel setup, troubleshooting
+- **[Architecture](./docs/architecture/)** - System design, decisions
+
+See [AGENTS.md](./AGENTS.md) for development rules and guidelines.
 
 ## Contributing
 

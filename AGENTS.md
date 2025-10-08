@@ -4,10 +4,20 @@ Project Setup
 • Database: Neon (EU) + Drizzle ORM
 • Auth: Clerk
 • Styling: TailwindCSS + shadcn/ui
+• Structure: Monorepo with pnpm workspaces
 
 ⸻
 
-Routing & Structure
+Monorepo Structure
+• apps/web/ → Next.js application
+• packages/shared/ → Shared TypeScript code (DB, types, utilities)
+• services/ → Future polyglot backend services (Python, Go, etc.)
+• docs/ → All project documentation (\*.md files)
+• Root → Only essential files (README.md, package.json, workspace config)
+
+⸻
+
+Routing & Structure (apps/web/)
 • /(marketing) → Public routes
 • SEO-first, static/ISR, indexable
 • No DB calls, only content from MD/MDX or CMS
@@ -17,22 +27,20 @@ Routing & Structure
 • Shared UI → components/ui
 • App-only UI → components/app
 • Marketing-only UI → components/marketing
-• Data schemas & migrations → db/schema.ts + db/migrations/
-• Helpers → lib/
-• db.ts → database client
-• auth.ts → Clerk helpers
-• seo.ts → SEO metadata utils
-• Content → content/ (MD/MDX with strict frontmatter)
+• Data schemas & migrations → packages/shared/db/
+• Helpers → apps/web/lib/ (web-specific) or packages/shared/lib/ (shared)
+• Content → apps/web/content/ (MD/MDX with strict frontmatter)
 
 ⸻
 
 Database & Migrations
-• Schema lives in db/schema.ts
+• Schema lives in packages/shared/db/schema.ts
 • Use drizzle-kit generate to create SQL migration files
-• Store migrations in db/migrations/\*.sql, commit them to repo
+• Store migrations in packages/shared/db/migrations/\*.sql, commit them to repo
 • Never edit committed migrations; create new ones to fix mistakes
-• Local workflow: generate + run migrations, seed with scripts/seed.ts
-• Prod workflow: CI runs migrations before Vercel deploy
+• Local workflow: pnpm db:gen → pnpm db:migrate → run app
+• Seed with packages/shared/seed.ts
+• Prod workflow: Run migrations manually before deploy (never in build step)
 • Preview workflow: create Neon branch per PR, run migrations there
 
 ⸻
@@ -56,8 +64,9 @@ Coding Rules
 
 Auth
 • Use Clerk middleware to protect /(app)
-• Server-side auth helpers (requireUser() in lib/auth.ts)
+• Server-side auth helpers (requireUser() in apps/web/lib/auth.ts)
 • Never put auth checks in client components
+• Clerk v6.31.9+ required for Edge Runtime compatibility
 
 ⸻
 
@@ -100,9 +109,22 @@ Component Guidelines
 
 ⸻
 
+Documentation Guidelines
+• All documentation goes in docs/ folder
+• Migration guides → docs/migration/
+• Deployment guides → docs/deployment/
+• Architecture docs → docs/architecture/
+• Keep root README.md concise (overview + quick start only)
+• Use clear, descriptive filenames (lowercase-with-dashes.md)
+• Include code examples with proper syntax highlighting
+
+⸻
+
 TL;DR
-• Schema in code, migrations in repo
+• Monorepo structure: apps/web + packages/shared + services/
+• Schema in packages/shared, migrations committed to repo
 • Typed code, reusable components, consistent styling
 • Static marketing, dynamic app
-• CI controls DB migrations, not Vercel build
+• Run migrations manually before deploy (never in build step)
+• Documentation in docs/ folder
 • Keep it modular, typed, and easy to reset when vibing

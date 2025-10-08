@@ -15,7 +15,7 @@ importers:
   apps/web:
     dependencies:
       '@clerk/nextjs':
-        specifier: ^6.8.0
+        specifier: ^6.31.9
         version: 6.31.9(next@15.5.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@procurdo/shared':
         specifier: workspace:*
