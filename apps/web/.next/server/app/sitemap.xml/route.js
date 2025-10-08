@@ -1,0 +1,11 @@
+var R=require("../../chunks/[turbopack]_runtime.js")("server/app/sitemap.xml/route.js")
+R.c("server/chunks/[root-of-the-server]__e0787b8e._.js")
+R.c("server/chunks/b8cd5_next_6877c3c0._.js")
+R.c("server/chunks/b8cd5_next_dist_8912465e._.js")
+R.c("server/chunks/b8cd5_next_dist_82b0a243._.js")
+R.c("server/chunks/b8cd5_next_dist_esm_server_lib_patch-fetch_49cc9b02.js")
+R.c("server/chunks/b8cd5_next_dist_compiled_@opentelemetry_api_index_1debfd75.js")
+R.c("server/chunks/[root-of-the-server]__c258bba1._.js")
+R.m(48789)
+R.m(2693)
+module.exports=R.m(2693).exports

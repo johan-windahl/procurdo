@@ -1,0 +1,110 @@
+{
+  "node": {
+    "7f7e2e9f0a8235f0361458a3455c27e9cfef9ce1e0": {
+      "workers": {
+        "app/(marketing)/sv-se/faq/vad-ar-den-offentliga-sektorn/page": {
+          "moduleId": "59558",
+          "async": false,
+          "exportedName": "detectKeylessEnvDriftAction",
+          "filename": "node_modules/.pnpm/@clerk+nextjs@6.31.9_next@15.5.2_react-dom@19.1.0_react@19.1.0__react@19.1.0__react-dom_c191f7ac07c74d3454527f80b025bba7/node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js"
+        }
+      },
+      "layer": {
+        "app/(marketing)/sv-se/faq/vad-ar-den-offentliga-sektorn/page": "rsc"
+      },
+      "exportedName": "detectKeylessEnvDriftAction",
+      "filename": "node_modules/.pnpm/@clerk+nextjs@6.31.9_next@15.5.2_react-dom@19.1.0_react@19.1.0__react@19.1.0__react-dom_c191f7ac07c74d3454527f80b025bba7/node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js"
+    },
+    "7f01c5950d304bfd265e0849157c2fda6012844302": {
+      "workers": {
+        "app/(marketing)/sv-se/faq/vad-ar-den-offentliga-sektorn/page": {
+          "moduleId": "59558",
+          "async": false,
+          "exportedName": "invalidateCacheAction",
+          "filename": "node_modules/.pnpm/@clerk+nextjs@6.31.9_next@15.5.2_react-dom@19.1.0_react@19.1.0__react@19.1.0__react-dom_c191f7ac07c74d3454527f80b025bba7/node_modules/@clerk/nextjs/dist/esm/app-router/server-actions.js"
+        }
+      },
+      "layer": {
+        "app/(marketing)/sv-se/faq/vad-ar-den-offentliga-sektorn/page": "action-browser"
+      },
+      "exportedName": "invalidateCacheAction",
+      "filename": "node_modules/.pnpm/@clerk+nextjs@6.31.9_next@15.5.2_react-dom@19.1.0_react@19.1.0__react@19.1.0__react-dom_c191f7ac07c74d3454527f80b025bba7/node_modules/@clerk/nextjs/dist/esm/app-router/server-actions.js"
+    },
+    "7fb7d57c3addf81fd61a2983482de5ab170396097c": {
+      "workers": {
+        "app/(marketing)/sv-se/faq/vad-ar-den-offentliga-sektorn/page": {
+          "moduleId": "59558",
+          "async": false,
+          "exportedName": "createOrReadKeylessAction",
+          "filename": "node_modules/.pnpm/@clerk+nextjs@6.31.9_next@15.5.2_react-dom@19.1.0_react@19.1.0__react@19.1.0__react-dom_c191f7ac07c74d3454527f80b025bba7/node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js"
+        }
+      },
+      "layer": {
+        "app/(marketing)/sv-se/faq/vad-ar-den-offentliga-sektorn/page": "rsc"
+      },
+      "exportedName": "createOrReadKeylessAction",
+      "filename": "node_modules/.pnpm/@clerk+nextjs@6.31.9_next@15.5.2_react-dom@19.1.0_react@19.1.0__react@19.1.0__react-dom_c191f7ac07c74d3454527f80b025bba7/node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js"
+    },
+    "7f54f6f364245563064f894611908482bece7b89ff": {
+      "workers": {
+        "app/(marketing)/sv-se/faq/vad-ar-den-offentliga-sektorn/page": {
+          "moduleId": "59558",
+          "async": false,
+          "exportedName": "collectKeylessMetadata",
+          "filename": "node_modules/.pnpm/@clerk+nextjs@6.31.9_next@15.5.2_react-dom@19.1.0_react@19.1.0__react@19.1.0__react-dom_c191f7ac07c74d3454527f80b025bba7/node_modules/@clerk/nextjs/dist/esm/server/keyless-custom-headers.js"
+        }
+      },
+      "layer": {
+        "app/(marketing)/sv-se/faq/vad-ar-den-offentliga-sektorn/page": "rsc"
+      },
+      "exportedName": "collectKeylessMetadata",
+      "filename": "node_modules/.pnpm/@clerk+nextjs@6.31.9_next@15.5.2_react-dom@19.1.0_react@19.1.0__react@19.1.0__react-dom_c191f7ac07c74d3454527f80b025bba7/node_modules/@clerk/nextjs/dist/esm/server/keyless-custom-headers.js"
+    },
+    "7f9df4ad67cbd03494d3e4495fef052d9b6b805ad3": {
+      "workers": {
+        "app/(marketing)/sv-se/faq/vad-ar-den-offentliga-sektorn/page": {
+          "moduleId": "59558",
+          "async": false,
+          "exportedName": "formatMetadataHeaders",
+          "filename": "node_modules/.pnpm/@clerk+nextjs@6.31.9_next@15.5.2_react-dom@19.1.0_react@19.1.0__react@19.1.0__react-dom_c191f7ac07c74d3454527f80b025bba7/node_modules/@clerk/nextjs/dist/esm/server/keyless-custom-headers.js"
+        }
+      },
+      "layer": {
+        "app/(marketing)/sv-se/faq/vad-ar-den-offentliga-sektorn/page": "rsc"
+      },
+      "exportedName": "formatMetadataHeaders",
+      "filename": "node_modules/.pnpm/@clerk+nextjs@6.31.9_next@15.5.2_react-dom@19.1.0_react@19.1.0__react@19.1.0__react-dom_c191f7ac07c74d3454527f80b025bba7/node_modules/@clerk/nextjs/dist/esm/server/keyless-custom-headers.js"
+    },
+    "7f04205f8db8b7e51d0eb09f5eb9302ee7383b2818": {
+      "workers": {
+        "app/(marketing)/sv-se/faq/vad-ar-den-offentliga-sektorn/page": {
+          "moduleId": "59558",
+          "async": false,
+          "exportedName": "syncKeylessConfigAction",
+          "filename": "node_modules/.pnpm/@clerk+nextjs@6.31.9_next@15.5.2_react-dom@19.1.0_react@19.1.0__react@19.1.0__react-dom_c191f7ac07c74d3454527f80b025bba7/node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js"
+        }
+      },
+      "layer": {
+        "app/(marketing)/sv-se/faq/vad-ar-den-offentliga-sektorn/page": "action-browser"
+      },
+      "exportedName": "syncKeylessConfigAction",
+      "filename": "node_modules/.pnpm/@clerk+nextjs@6.31.9_next@15.5.2_react-dom@19.1.0_react@19.1.0__react@19.1.0__react-dom_c191f7ac07c74d3454527f80b025bba7/node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js"
+    },
+    "7f885f86ff8c0e21a3b84945bba87fcbde49510bb0": {
+      "workers": {
+        "app/(marketing)/sv-se/faq/vad-ar-den-offentliga-sektorn/page": {
+          "moduleId": "59558",
+          "async": false,
+          "exportedName": "deleteKeylessAction",
+          "filename": "node_modules/.pnpm/@clerk+nextjs@6.31.9_next@15.5.2_react-dom@19.1.0_react@19.1.0__react@19.1.0__react-dom_c191f7ac07c74d3454527f80b025bba7/node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js"
+        }
+      },
+      "layer": {
+        "app/(marketing)/sv-se/faq/vad-ar-den-offentliga-sektorn/page": "action-browser"
+      },
+      "exportedName": "deleteKeylessAction",
+      "filename": "node_modules/.pnpm/@clerk+nextjs@6.31.9_next@15.5.2_react-dom@19.1.0_react@19.1.0__react@19.1.0__react-dom_c191f7ac07c74d3454527f80b025bba7/node_modules/@clerk/nextjs/dist/esm/app-router/keyless-actions.js"
+    }
+  },
+  "edge": {}
+}

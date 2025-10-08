@@ -1,0 +1,13 @@
+{
+  "pages": {
+    "/robots.txt/route": [
+      "static/chunks/26935baf20f7d5d3.js",
+      "static/chunks/71cb02d7bc0c5cfc.js",
+      "static/chunks/aef34e03c0333d8e.js",
+      "static/chunks/fbc838fafd86f8f9.js",
+      "static/chunks/069282a2aa987fb8.js",
+      "static/chunks/e97fccf3759d04fb.js",
+      "static/chunks/turbopack-46ad5d15d72a4a40.js"
+    ]
+  }
+}

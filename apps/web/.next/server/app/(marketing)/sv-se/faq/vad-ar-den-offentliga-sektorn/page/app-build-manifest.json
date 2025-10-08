@@ -1,0 +1,21 @@
+{
+  "pages": {
+    "/(marketing)/sv-se/faq/vad-ar-den-offentliga-sektorn/page": [
+      "static/chunks/504003311425f84c.js",
+      "static/chunks/d2df04eda49ca835.js",
+      "static/chunks/4485f74d0d50154a.js",
+      "static/chunks/1282cbb27ba403f7.js",
+      "static/chunks/9d5cee48d63cf15a.css",
+      "static/chunks/8de2c8a3515698b3.js",
+      "static/chunks/ef3cc8a1c3c4b49d.js",
+      "static/chunks/1e4a9a08264a9e2d.js",
+      "static/chunks/26935baf20f7d5d3.js",
+      "static/chunks/71cb02d7bc0c5cfc.js",
+      "static/chunks/aef34e03c0333d8e.js",
+      "static/chunks/fbc838fafd86f8f9.js",
+      "static/chunks/069282a2aa987fb8.js",
+      "static/chunks/e97fccf3759d04fb.js",
+      "static/chunks/turbopack-46ad5d15d72a4a40.js"
+    ]
+  }
+}
