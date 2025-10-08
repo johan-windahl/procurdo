@@ -1,5 +1,0 @@
-{
-  "buildCommand": "cd ../.. && pnpm install && pnpm --filter @procurdo/web build",
-  "installCommand": "cd ../.. && pnpm install",
-  "framework": null
-}
