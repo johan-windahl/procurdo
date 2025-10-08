@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
 
 type NavItem = { label: string; href: string };
 
@@ -16,6 +17,7 @@ const nav: NavItem[] = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const { isSignedIn } = useUser();
 
   // Close on escape
   useEffect(() => {
@@ -43,9 +45,13 @@ export function Header() {
               {item.label}
             </Link>
           ))}
-          <Link href="/sv-se/sok-upphandling">
-            <Button size="md">Sök upphandlingar</Button>
-          </Link>
+          {isSignedIn ? (
+            <UserButton />
+          ) : (
+            <SignInButton mode="modal">
+              <Button size="md">Logga in</Button>
+            </SignInButton>)
+          }
         </nav>
 
         {/* Mobile hamburger */}
@@ -75,11 +81,14 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
-            <Link href="/sv-se/sok-upphandling" onClick={() => setOpen(false)}>
-              <Button size="lg" className="w-full">
-                Sök upphandlingar
-              </Button>
-            </Link>
+            <div className="flex flex-col gap-2 pt-2">
+              <SignInButton mode="modal">
+                <Button size="lg" className="w-full" onClick={() => setOpen(false)}>
+                  Logga in
+                </Button>
+              </SignInButton>
+              <UserButton afterSignOutUrl="/sv-se" />
+            </div>
           </div>
         </div>
       </div>
