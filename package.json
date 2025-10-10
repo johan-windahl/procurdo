@@ -2,7 +2,6 @@
   "name": "procurdo-monorepo",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@10",
   "scripts": {
     "dev": "pnpm --filter @procurdo/web dev",
     "build": "pnpm --filter @procurdo/shared build && pnpm --filter @procurdo/web build",

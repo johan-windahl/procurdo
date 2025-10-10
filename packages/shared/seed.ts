@@ -1,6 +1,6 @@
 /*
   Simple seed script skeleton.
-  Requires dev deps: tsx (or ts-node), drizzle-orm, @neondatabase/serverless, dotenv
+  Requires dev deps: tsx (or ts-node), drizzle-orm, pg, dotenv
 */
 import "dotenv/config";
 // import { db } from "./lib/db";

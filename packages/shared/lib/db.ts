@@ -1,13 +1,9 @@
-// Database client supporting Neon (HTTP) and local Postgres (pg)
+// Database client for PostgreSQL with PgBouncer
 // Note: requires installing packages:
 //  - drizzle-orm
-//  - drizzle-kit (dev)
-//  - @neondatabase/serverless (for Neon HTTP)
-//  - pg (for local Postgres)
+//  - pg (for PostgreSQL connections)
 //  - dotenv (dev) for local scripts
-import { drizzle as drizzleNeon } from "drizzle-orm/neon-http";
-import { drizzle as drizzlePg } from "drizzle-orm/node-postgres";
-import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
 const databaseUrl = process.env.DATABASE_URL;
@@ -17,19 +13,15 @@ if (!databaseUrl) {
 }
 
 export const db = (() => {
-  if (!databaseUrl) return undefined as unknown as ReturnType<typeof drizzlePg>;
-  try {
-    const host = new URL(databaseUrl).hostname;
-    const isNeon = host.endsWith("neon.tech");
-    if (isNeon) {
-      const client = neon(databaseUrl);
-      return drizzleNeon(client);
-    }
-    const pool = new Pool({ connectionString: databaseUrl });
-    return drizzlePg(pool);
-  } catch {
-    // Fallback to pg
-    const pool = new Pool({ connectionString: databaseUrl });
-    return drizzlePg(pool);
-  }
+  if (!databaseUrl) return undefined as unknown as ReturnType<typeof drizzle>;
+
+  const pool = new Pool({
+    connectionString: databaseUrl,
+    // Optional: Configure pool settings for PgBouncer
+    max: 10, // Maximum number of clients in pool
+    idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
+    connectionTimeoutMillis: 2000, // Return error after 2 seconds if connection could not be established
+  });
+
+  return drizzle(pool);
 })();
