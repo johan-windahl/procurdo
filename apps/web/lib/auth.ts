@@ -1,4 +1,4 @@
-import { auth, currentUser, redirectToSignIn } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 export type AuthedUser = {
   id: string;
@@ -6,7 +6,7 @@ export type AuthedUser = {
 };
 
 export async function requireUser(): Promise<AuthedUser> {
-  const { userId } = await auth();
+  const { userId, redirectToSignIn } = await auth();
   if (!userId) {
     return redirectToSignIn({ returnBackUrl: "/sv-se/app" });
   }

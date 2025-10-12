@@ -53,7 +53,6 @@ export function AppSidebar() {
             size="icon"
             variant="ghost"
             onClick={() => setCollapsed((prev) => !prev)}
-            className="h-8 w-8"
             aria-label={collapsed ? "Expandera sidomenyn" : "Minimera sidomenyn"}
           >
             {collapsed ? <ChevronsRight className="h-4 w-4" /> : <ChevronsLeft className="h-4 w-4" />}
