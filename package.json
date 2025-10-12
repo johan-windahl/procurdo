@@ -1,44 +1,27 @@
 {
-  "name": "procurdo",
+  "name": "procurdo-monorepo",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start",
-    "lint": "eslint",
-    "db:gen": "drizzle-kit generate --config=drizzle.config.ts",
-    "db:migrate": "drizzle-kit migrate --config=drizzle.config.ts",
-    "db:studio": "drizzle-kit studio --config=drizzle.config.ts",
-    "db:seed": "tsx scripts/seed.ts"
-  },
-  "dependencies": {
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "drizzle-orm": "^0.36.0",
-    "pg": "^8.13.1",
-    "lucide-react": "^0.542.0",
-    "next": "15.5.2",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "tailwind-merge": "^3.3.1",
-    "@clerk/nextjs": "^6.8.0",
-    "@neondatabase/serverless": "^0.10.4"
+    "dev": "pnpm --filter @procurdo/web dev",
+    "build": "pnpm --filter @procurdo/shared build && pnpm --filter @procurdo/web build",
+    "start": "pnpm --filter @procurdo/web start",
+    "lint": "pnpm --filter @procurdo/web lint",
+    "db:gen": "pnpm --filter @procurdo/shared db:gen",
+    "db:gen:procudo_dev": "pnpm --filter @procurdo/shared db:gen:procudo_dev",
+    "db:gen:procudo_data_dev": "pnpm --filter @procurdo/shared db:gen:procudo_data_dev",
+    "db:migrate": "pnpm --filter @procurdo/shared db:migrate",
+    "db:migrate:procudo_dev": "pnpm --filter @procurdo/shared db:migrate:procudo_dev",
+    "db:migrate:procudo_data_dev": "pnpm --filter @procurdo/shared db:migrate:procudo_data_dev",
+    "db:migrate:procudo_prod": "pnpm --filter @procurdo/shared db:migrate:procudo_prod",
+    "db:migrate:procudo_data_prod": "pnpm --filter @procurdo/shared db:migrate:procudo_data_prod",
+    "db:migrate:all": "pnpm --filter @procurdo/shared db:migrate:all",
+    "db:studio": "pnpm --filter @procurdo/shared db:studio",
+    "db:studio:procudo_dev": "pnpm --filter @procurdo/shared db:studio:procudo_dev",
+    "db:studio:procudo_data_dev": "pnpm --filter @procurdo/shared db:studio:procudo_data_dev",
+    "db:seed": "pnpm --filter @procurdo/shared db:seed"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "@types/pg": "^8.11.10",
-    "eslint": "^9",
-    "eslint-config-next": "15.5.2",
-    "tailwindcss": "^4",
-    "tw-animate-css": "^1.3.8",
-    "typescript": "^5",
-    "drizzle-kit": "^0.30.1",
-    "dotenv": "^16.4.5",
-    "tsx": "^4.19.2"
+    "typescript": "^5"
   }
 }

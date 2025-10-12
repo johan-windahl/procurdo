@@ -1,0 +1,18 @@
+{
+  "name": "procurdo-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter @procurdo/web dev",
+    "build": "pnpm --filter @procurdo/shared build && pnpm --filter @procurdo/web build",
+    "start": "pnpm --filter @procurdo/web start",
+    "lint": "pnpm --filter @procurdo/web lint",
+    "db:gen": "pnpm --filter @procurdo/shared db:gen",
+    "db:migrate": "pnpm --filter @procurdo/shared db:migrate",
+    "db:studio": "pnpm --filter @procurdo/shared db:studio",
+    "db:seed": "pnpm --filter @procurdo/shared db:seed"
+  },
+  "devDependencies": {
+    "typescript": "^5"
+  }
+}
