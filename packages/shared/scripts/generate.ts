@@ -1,5 +1,4 @@
 #!/usr/bin/env tsx
-import { generate } from "drizzle-kit/generator";
 import * as fs from "fs";
 import * as path from "path";
 import {
