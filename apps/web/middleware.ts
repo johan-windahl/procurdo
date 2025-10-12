@@ -1,7 +1,15 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-const isProtectedRoute = createRouteMatcher(["/app(.*)"]);
+const isProtectedRoute = createRouteMatcher([
+  "/app(.*)",
+  "/:locale/app(.*)",
+  "/:locale/dashboard(.*)",
+  "/:locale/sok(.*)",
+  "/:locale/sparade-sokningar(.*)",
+  "/:locale/bevakningar(.*)",
+  "/:locale/bevakade-upphandlingar(.*)",
+]);
 
 export default clerkMiddleware(async (auth, req) => {
   const url = req.nextUrl;
@@ -27,7 +35,9 @@ export default clerkMiddleware(async (auth, req) => {
 
   if (isProtectedRoute(req)) {
     const { userId, redirectToSignIn } = await auth();
-    if (!userId) return redirectToSignIn();
+    if (!userId) {
+      return redirectToSignIn({ returnBackUrl: url.toString() });
+    }
   }
 });
 

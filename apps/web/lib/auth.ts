@@ -1,4 +1,4 @@
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { auth, currentUser, redirectToSignIn } from "@clerk/nextjs/server";
 
 export type AuthedUser = {
   id: string;
@@ -8,8 +8,7 @@ export type AuthedUser = {
 export async function requireUser(): Promise<AuthedUser> {
   const { userId } = await auth();
   if (!userId) {
-    // Clerk middleware should protect already; this is a safety net
-    throw new Error("Unauthorized");
+    return redirectToSignIn({ returnBackUrl: "/sv-se/app" });
   }
   const user = await currentUser();
   return {
