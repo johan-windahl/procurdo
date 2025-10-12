@@ -8,8 +8,15 @@
     "start": "pnpm --filter @procurdo/web start",
     "lint": "pnpm --filter @procurdo/web lint",
     "db:gen": "pnpm --filter @procurdo/shared db:gen",
+    "db:gen:procudo_dev": "pnpm --filter @procurdo/shared db:gen:procudo_dev",
+    "db:gen:procudo_data_dev": "pnpm --filter @procurdo/shared db:gen:procudo_data_dev",
     "db:migrate": "pnpm --filter @procurdo/shared db:migrate",
+    "db:migrate:procudo_dev": "pnpm --filter @procurdo/shared db:migrate:procudo_dev",
+    "db:migrate:procudo_data_dev": "pnpm --filter @procurdo/shared db:migrate:procudo_data_dev",
+    "db:migrate:all": "pnpm --filter @procurdo/shared db:migrate:all",
     "db:studio": "pnpm --filter @procurdo/shared db:studio",
+    "db:studio:procudo_dev": "pnpm --filter @procurdo/shared db:studio:procudo_dev",
+    "db:studio:procudo_data_dev": "pnpm --filter @procurdo/shared db:studio:procudo_data_dev",
     "db:seed": "pnpm --filter @procurdo/shared db:seed"
   },
   "devDependencies": {

@@ -1,7 +1,7 @@
 Project Setup
 • Framework: Next.js App Router
 • Hosting: Vercel
-• Database: Neon (EU) + Drizzle ORM
+• Database: Postgres installed on VPS (locally for dev) + Drizzle ORM
 • Auth: Clerk
 • Styling: TailwindCSS + shadcn/ui
 • Structure: Monorepo with pnpm workspaces
@@ -41,7 +41,6 @@ Database & Migrations
 • Local workflow: pnpm db:gen → pnpm db:migrate → run app
 • Seed with packages/shared/seed.ts
 • Prod workflow: Run migrations manually before deploy (never in build step)
-• Preview workflow: create Neon branch per PR, run migrations there
 
 ⸻
 
@@ -82,11 +81,10 @@ Dev Workflow
 • Change schema → pnpm db:gen → pnpm db:migrate → run app
 • Reset DB if messy (drop + re-run migrations + seed)
 • PR
-• CI creates Neon branch
-• CI runs migrations
+• Migrations are runned manually
 • Vercel Preview uses branch DATABASE_URL
 • Main
-• CI runs migrations on prod DB
+• Migrations are runned manually on prod DB
 • Then triggers Vercel deploy
 
 ⸻

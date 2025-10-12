@@ -24,7 +24,7 @@ procurdo/
 
 - Node.js 20+
 - pnpm 8+
-- PostgreSQL (Neon or local)
+- PostgreSQL
 
 ### Installation
 
@@ -70,7 +70,7 @@ Next.js web application with:
 Environment variables required:
 
 - `NEXT_PUBLIC_GA_ID` - Google Analytics ID (default: `G-2KT03XRWKB`)
-- `DATABASE_URL` - Neon PostgreSQL connection string
+- `DATABASE_URL` - PostgreSQL connection string
 - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` - Clerk public key
 - `CLERK_SECRET_KEY` - Clerk secret key
 
@@ -84,7 +84,6 @@ Shared TypeScript package containing:
 
 ## Database
 
-- **Provider**: Neon (EU region)
 - **ORM**: Drizzle ORM
 - **Schema**: `packages/shared/db/schema.ts`
 - **Migrations**: `packages/shared/db/migrations/`
@@ -128,7 +127,6 @@ See the [deployment documentation](./docs/deployment/) for detailed guides:
 ## Architecture
 
 - **Frontend**: Next.js on Vercel (static marketing pages + dynamic app pages)
-- **Database**: Neon PostgreSQL (EU)
 - **Auth**: Clerk
 - **Future Services**: Polyglot microservices on VPS with Docker
 

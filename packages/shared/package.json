@@ -12,9 +12,16 @@
   },
   "scripts": {
     "build": "tsc",
-    "db:gen": "drizzle-kit generate --config=drizzle.config.ts",
-    "db:migrate": "drizzle-kit migrate --config=drizzle.config.ts",
+    "db:gen": "tsx scripts/generate.ts",
+    "db:gen:procudo_dev": "drizzle-kit generate --config=db/migrations/procudo_dev/drizzle.config.ts",
+    "db:gen:procudo_data_dev": "drizzle-kit generate --config=db/migrations/procudo_data_dev/drizzle.config.ts",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:migrate:procudo_dev": "tsx scripts/migrate.ts procudo_dev",
+    "db:migrate:procudo_data_dev": "tsx scripts/migrate.ts procudo_data_dev",
+    "db:migrate:all": "tsx scripts/migrate.ts",
     "db:studio": "drizzle-kit studio --config=drizzle.config.ts",
+    "db:studio:procudo_dev": "drizzle-kit studio --config=db/migrations/procudo_dev/drizzle.config.ts",
+    "db:studio:procudo_data_dev": "drizzle-kit studio --config=db/migrations/procudo_data_dev/drizzle.config.ts",
     "db:seed": "tsx seed.ts"
   },
   "dependencies": {

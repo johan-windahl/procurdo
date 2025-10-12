@@ -5,15 +5,17 @@
 //  - dotenv (dev) for local scripts
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
+import { getDatabaseUrl, getAllDatabaseConfigs, type DatabaseName } from "./db-config";
 
-const databaseUrl = process.env.DATABASE_URL;
-if (!databaseUrl) {
-  // Avoid throwing at import-time in edge build; consumers should handle missing DB in marketing
-  // Throw only when app code actually needs DB
-}
+// Cache for database connections
+const dbInstances = new Map<DatabaseName, ReturnType<typeof drizzle>>();
 
-export const db = (() => {
-  if (!databaseUrl) return undefined as unknown as ReturnType<typeof drizzle>;
+function createDatabaseConnection(dbName: DatabaseName) {
+  const databaseUrl = getDatabaseUrl(dbName);
+
+  if (!databaseUrl) {
+    throw new Error(`Database URL not found for ${dbName}`);
+  }
 
   const pool = new Pool({
     connectionString: databaseUrl,
@@ -24,4 +26,28 @@ export const db = (() => {
   });
 
   return drizzle(pool);
-})();
+}
+
+export function getDatabase(dbName?: DatabaseName) {
+  const targetDb = dbName || 'procudo_dev';
+
+  if (!dbInstances.has(targetDb)) {
+    dbInstances.set(targetDb, createDatabaseConnection(targetDb));
+  }
+
+  return dbInstances.get(targetDb)!;
+}
+
+// Default export for backward compatibility
+export const db = getDatabase();
+
+// Export all available database connections
+export const databases = getAllDatabaseConfigs().reduce((acc, config) => {
+  acc[config.name] = getDatabase(config.name);
+  return acc;
+}, {} as Record<DatabaseName, ReturnType<typeof drizzle>>);
+
+// Helper function to get a specific database by name
+export function getDb(dbName: DatabaseName) {
+  return getDatabase(dbName);
+}
