@@ -19,6 +19,14 @@ DATABASE_URL_PROCUDO_DATA_DEV=postgresql://db_admin:password@localhost:5432/proc
 
 # Legacy single database URL (for backward compatibility)
 # DATABASE_URL=postgresql://db_admin:password@localhost:5432/procudo_dev
+
+# Migration targets
+MIGRATION_DATABASE_URL_PROCUDO_DEV=postgresql://db_admin:password@localhost:5432/procudo_dev
+MIGRATION_DATABASE_URL_PROCUDO_DATA_DEV=postgresql://db_admin:password@localhost:5432/procudo_data_dev
+
+# Optional: point these at remote instances when migrating from your machine
+MIGRATION_DATABASE_URL_PROCUDO_PROD=
+MIGRATION_DATABASE_URL_PROCUDO_DATA_PROD=
 ```
 
 ## Database Purposes
@@ -44,6 +52,10 @@ pnpm db:migrate:procudo_data_dev
 
 # Dry run (see what would be migrated)
 pnpm db:migrate:all --dry-run
+
+# Target specific environments (requires MIGRATION_DATABASE_URL_* to be set)
+pnpm db:migrate:procudo_prod
+pnpm db:migrate:procudo_data_prod
 ```
 
 ## Database Connection

@@ -26,7 +26,10 @@ procurdo/
 ├── packages/
 │   └── shared/                       # Shared TypeScript package
 │       ├── db/
-│       │   ├── schema.ts             # Drizzle schema
+│       │   ├── schema/
+│       │   │   ├── procudo-data.ts   # Procudo data database schema
+│       │   │   └── procudo.ts        # Procudo application schema
+│       │   ├── schema.ts             # Re-exports shared schemas
 │       │   └── migrations/           # SQL migrations
 │       ├── lib/
 │       │   ├── db.ts                 # Database client
@@ -54,7 +57,7 @@ procurdo/
 
 ### 2. Created Shared Package (`@procurdo/shared`)
 
-- ✅ Moved database schema to `packages/shared/db/schema.ts`
+- ✅ Moved database schemas to `packages/shared/db/schema/`
 - ✅ Moved migrations to `packages/shared/db/migrations/`
 - ✅ Moved database client to `packages/shared/lib/db.ts`
 - ✅ Moved shared utilities to `packages/shared/lib/utils.ts`

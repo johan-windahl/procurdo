@@ -85,12 +85,14 @@ Shared TypeScript package containing:
 ## Database
 
 - **ORM**: Drizzle ORM
-- **Schema**: `packages/shared/db/schema.ts`
+- **Schemas**:
+  - Procudo app: `packages/shared/db/schema/procudo.ts`
+  - Procudo data: `packages/shared/db/schema/procudo-data.ts`
 - **Migrations**: `packages/shared/db/migrations/`
 
 ### Migration Workflow
 
-1. Modify schema in `packages/shared/db/schema.ts`
+1. Modify the appropriate schema file under `packages/shared/db/schema/`
 2. Generate migration: `pnpm db:gen`
 3. Review generated SQL in `packages/shared/db/migrations/`
 4. Run migration: `pnpm db:migrate`

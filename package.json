@@ -13,6 +13,8 @@
     "db:migrate": "pnpm --filter @procurdo/shared db:migrate",
     "db:migrate:procudo_dev": "pnpm --filter @procurdo/shared db:migrate:procudo_dev",
     "db:migrate:procudo_data_dev": "pnpm --filter @procurdo/shared db:migrate:procudo_data_dev",
+    "db:migrate:procudo_prod": "pnpm --filter @procurdo/shared db:migrate:procudo_prod",
+    "db:migrate:procudo_data_prod": "pnpm --filter @procurdo/shared db:migrate:procudo_data_prod",
     "db:migrate:all": "pnpm --filter @procurdo/shared db:migrate:all",
     "db:studio": "pnpm --filter @procurdo/shared db:studio",
     "db:studio:procudo_dev": "pnpm --filter @procurdo/shared db:studio:procudo_dev",

@@ -1,32 +1,51 @@
 #!/usr/bin/env tsx
 import { generate } from "drizzle-kit/generator";
-import { getAllDatabaseConfigs, type DatabaseName } from "../lib/db-config";
 import * as fs from "fs";
 import * as path from "path";
+import {
+    getAllMigrationDatabaseConfigs,
+    getMigrationDatabaseConfig,
+    MIGRATION_DATABASE_NAMES,
+    type MigrationDatabaseName
+} from "../lib/db-config";
+import { config as loadEnv } from "dotenv";
+
+const envPaths = [
+    path.resolve(process.cwd(), ".env"),
+    path.resolve(process.cwd(), ".env.local"),
+    path.resolve(process.cwd(), "..", ".env"),
+    path.resolve(process.cwd(), "..", ".env.local"),
+    path.resolve(process.cwd(), "..", "..", ".env"),
+    path.resolve(process.cwd(), "..", "..", ".env.local")
+];
+
+for (const envPath of envPaths) {
+    if (fs.existsSync(envPath)) {
+        loadEnv({ path: envPath, override: false });
+    }
+}
 
 // Get command line arguments
 const args = process.argv.slice(2);
-const specificDb = args[0] as DatabaseName | undefined;
+const specificDb = args[0] as MigrationDatabaseName | undefined;
 const dryRun = args.includes('--dry-run');
 
 // Validate database name if provided
-if (specificDb && !['procudo_dev', 'procudo_data_dev'].includes(specificDb)) {
+if (specificDb && !MIGRATION_DATABASE_NAMES.includes(specificDb)) {
     console.error(`Invalid database name: ${specificDb}`);
-    console.error('Valid options: procudo_dev, procudo_data_dev');
+    console.error(`Valid options: ${MIGRATION_DATABASE_NAMES.join(', ')}`);
     process.exit(1);
 }
 
-async function generateMigrationsForDatabase(dbName: DatabaseName) {
-    const dbConfig = getAllDatabaseConfigs().find(config => config.name === dbName);
-    if (!dbConfig) {
-        throw new Error(`Database configuration not found for: ${dbName}`);
-    }
+async function generateMigrationsForDatabase(dbName: MigrationDatabaseName) {
+    const dbConfig = getMigrationDatabaseConfig(dbName);
 
     console.log(`\n🔧 Generating migrations for database: ${dbName}`);
     console.log(`📍 URL: ${dbConfig.url}`);
     console.log(`📝 Description: ${dbConfig.description}`);
+    console.log(`🌎 Environment: ${dbConfig.environment}`);
 
-    const migrationsPath = path.join(process.cwd(), 'db', 'migrations', dbName);
+    const migrationsPath = path.join(process.cwd(), 'db', 'migrations', dbConfig.migrationsFolder);
 
     try {
         if (dryRun) {
@@ -65,7 +84,13 @@ async function main() {
             await generateMigrationsForDatabase(specificDb);
         } else {
             // Generate for all databases
-            const allDbs = getAllDatabaseConfigs();
+            const allDbs = getAllMigrationDatabaseConfigs();
+
+            if (allDbs.length === 0) {
+                console.log('⚠️  No migration targets configured. Set MIGRATION_DATABASE_URL_* variables in your .env.local file.');
+                return;
+            }
+
             for (const dbConfig of allDbs) {
                 await generateMigrationsForDatabase(dbConfig.name);
             }
@@ -83,7 +108,7 @@ if (args.includes('--help') || args.includes('-h')) {
 Usage: tsx scripts/generate.ts [database-name] [options]
 
 Arguments:
-  database-name    Specific database to generate migrations for (procudo_dev or procudo_data_dev)
+  database-name    Specific database to generate migrations for (${MIGRATION_DATABASE_NAMES.join(' or ')})
                    If not provided, generates for all databases
 
 Options:

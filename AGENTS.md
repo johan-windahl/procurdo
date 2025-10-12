@@ -34,7 +34,7 @@ Routing & Structure (apps/web/)
 ⸻
 
 Database & Migrations
-• Schema lives in packages/shared/db/schema.ts
+• Schema lives in packages/shared/db/schema/ (separate files per database)
 • Use drizzle-kit generate to create SQL migration files
 • Store migrations in packages/shared/db/migrations/\*.sql, commit them to repo
 • Never edit committed migrations; create new ones to fix mistakes

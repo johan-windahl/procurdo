@@ -7,6 +7,8 @@
   "exports": {
     ".": "./dist/index.js",
     "./db/schema": "./dist/db/schema.js",
+    "./db/schema/procudo": "./dist/db/schema/procudo.js",
+    "./db/schema/procudo-data": "./dist/db/schema/procudo-data.js",
     "./lib/db": "./dist/lib/db.js",
     "./lib/utils": "./dist/lib/utils.js"
   },
@@ -18,6 +20,8 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "db:migrate:procudo_dev": "tsx scripts/migrate.ts procudo_dev",
     "db:migrate:procudo_data_dev": "tsx scripts/migrate.ts procudo_data_dev",
+    "db:migrate:procudo_prod": "tsx scripts/migrate.ts procudo_prod",
+    "db:migrate:procudo_data_prod": "tsx scripts/migrate.ts procudo_data_prod",
     "db:migrate:all": "tsx scripts/migrate.ts",
     "db:studio": "drizzle-kit studio --config=drizzle.config.ts",
     "db:studio:procudo_dev": "drizzle-kit studio --config=db/migrations/procudo_dev/drizzle.config.ts",

@@ -1,38 +1,57 @@
 #!/usr/bin/env tsx
 import { migrate } from "drizzle-orm/node-postgres/migrator";
-import { getDatabase, getDatabaseUrl, getAllDatabaseConfigs, type DatabaseName } from "../lib/db-config";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as fs from "fs";
 import * as path from "path";
+import {
+    getAllMigrationDatabaseConfigs,
+    getMigrationDatabaseConfig,
+    MIGRATION_DATABASE_NAMES,
+    type MigrationDatabaseName
+} from "../lib/db-config";
+import { config as loadEnv } from "dotenv";
+
+const envPaths = [
+    path.resolve(process.cwd(), ".env"),
+    path.resolve(process.cwd(), ".env.local"),
+    path.resolve(process.cwd(), "..", ".env"),
+    path.resolve(process.cwd(), "..", ".env.local"),
+    path.resolve(process.cwd(), "..", "..", ".env"),
+    path.resolve(process.cwd(), "..", "..", ".env.local")
+];
+
+for (const envPath of envPaths) {
+    if (fs.existsSync(envPath)) {
+        loadEnv({ path: envPath, override: false });
+    }
+}
 
 // Get command line arguments
 const args = process.argv.slice(2);
-const specificDb = args[0] as DatabaseName | undefined;
+const specificDb = args[0] as MigrationDatabaseName | undefined;
 const dryRun = args.includes('--dry-run');
 
 // Validate database name if provided
-if (specificDb && !['procudo_dev', 'procudo_data_dev'].includes(specificDb)) {
+if (specificDb && !MIGRATION_DATABASE_NAMES.includes(specificDb)) {
     console.error(`Invalid database name: ${specificDb}`);
-    console.error('Valid options: procudo_dev, procudo_data_dev');
+    console.error(`Valid options: ${MIGRATION_DATABASE_NAMES.join(', ')}`);
     process.exit(1);
 }
 
-async function migrateDatabase(dbName: DatabaseName) {
-    const dbConfig = getAllDatabaseConfigs().find(config => config.name === dbName);
-    if (!dbConfig) {
-        throw new Error(`Database configuration not found for: ${dbName}`);
-    }
+async function migrateDatabase(dbName: MigrationDatabaseName) {
+    const dbConfig = getMigrationDatabaseConfig(dbName);
 
     console.log(`\n🚀 Migrating database: ${dbName}`);
     console.log(`📍 URL: ${dbConfig.url}`);
     console.log(`📝 Description: ${dbConfig.description}`);
+    console.log(`🌎 Environment: ${dbConfig.environment}`);
 
-    const migrationsPath = path.join(process.cwd(), 'db', 'migrations', dbName);
+    const migrationsPath = path.join(process.cwd(), 'db', 'migrations', dbConfig.migrationsFolder);
 
     // Check if migrations directory exists
     if (!fs.existsSync(migrationsPath)) {
-        console.log(`⚠️  No migrations directory found for ${dbName} at ${migrationsPath}`);
+        console.log(`⚠️  No migrations directory found for ${dbConfig.migrationsFolder} at ${migrationsPath}`);
         return;
     }
 
@@ -77,7 +96,13 @@ async function main() {
             await migrateDatabase(specificDb);
         } else {
             // Migrate all databases
-            const allDbs = getAllDatabaseConfigs();
+            const allDbs = getAllMigrationDatabaseConfigs();
+
+            if (allDbs.length === 0) {
+                console.log('⚠️  No migration targets configured. Set MIGRATION_DATABASE_URL_* variables in your .env.local file.');
+                return;
+            }
+
             for (const dbConfig of allDbs) {
                 await migrateDatabase(dbConfig.name);
             }
@@ -95,7 +120,7 @@ if (args.includes('--help') || args.includes('-h')) {
 Usage: tsx scripts/migrate.ts [database-name] [options]
 
 Arguments:
-  database-name    Specific database to migrate (procudo_dev or procudo_data_dev)
+  database-name    Specific database to migrate (${MIGRATION_DATABASE_NAMES.join(' or ')})
                    If not provided, migrates all databases
 
 Options:
@@ -103,9 +128,10 @@ Options:
   --help, -h       Show this help message
 
 Examples:
-  tsx scripts/migrate.ts                    # Migrate all databases
+  tsx scripts/migrate.ts                    # Migrate all configured databases
   tsx scripts/migrate.ts procudo_dev        # Migrate only procudo_dev
   tsx scripts/migrate.ts procudo_data_dev   # Migrate only procudo_data_dev
+  tsx scripts/migrate.ts procudo_prod       # Migrate production application database
   tsx scripts/migrate.ts procudo_dev --dry-run  # Dry run for procudo_dev
 `);
     process.exit(0);
