@@ -148,7 +148,7 @@ const initialSavedSearches: SavedSearch[] = [
     name: "IT-konsulter Stockholm",
     description: "Aktuella projekt för digitalisering och systemutveckling",
     filters: {
-      cpvs: ["72222300"],
+      cpvs: ["7222300"],
       text: "it konsult",
       dateFrom: "2024-06-01",
       deadlineTo: "",
@@ -252,12 +252,12 @@ export function SearchPreferencesProvider({ children }: { children: React.ReactN
       current.map((item) =>
         item.id === id
           ? {
-              ...item,
-              ...("filters" in update && update.filters ? { filters: update.filters } : {}),
-              ...(update.name ? { name: update.name } : {}),
-              ...(update.description !== undefined ? { description: update.description } : {}),
-              lastRunAt: item.lastRunAt,
-            }
+            ...item,
+            ...("filters" in update && update.filters ? { filters: update.filters } : {}),
+            ...(update.name ? { name: update.name } : {}),
+            ...(update.description !== undefined ? { description: update.description } : {}),
+            lastRunAt: item.lastRunAt,
+          }
           : item,
       ),
     );
@@ -292,16 +292,16 @@ export function SearchPreferencesProvider({ children }: { children: React.ReactN
       current.map((monitor) =>
         monitor.id === id
           ? {
-              ...monitor,
-              ...(update.name ? { name: update.name } : {}),
-              ...(update.savedSearchId ? { savedSearchId: update.savedSearchId } : {}),
-              ...(update.frequency ? { frequency: update.frequency } : {}),
-              ...(update.timeOfDay ? { timeOfDay: update.timeOfDay } : {}),
-              ...(update.relativeRange ? { relativeRange: update.relativeRange } : {}),
-              ...(update.customRangeDays !== undefined ? { customRangeDays: update.customRangeDays } : {}),
-              ...(update.lastRunAt ? { lastRunAt: update.lastRunAt } : {}),
-              ...(update.status ? { status: update.status } : {}),
-            }
+            ...monitor,
+            ...(update.name ? { name: update.name } : {}),
+            ...(update.savedSearchId ? { savedSearchId: update.savedSearchId } : {}),
+            ...(update.frequency ? { frequency: update.frequency } : {}),
+            ...(update.timeOfDay ? { timeOfDay: update.timeOfDay } : {}),
+            ...(update.relativeRange ? { relativeRange: update.relativeRange } : {}),
+            ...(update.customRangeDays !== undefined ? { customRangeDays: update.customRangeDays } : {}),
+            ...(update.lastRunAt ? { lastRunAt: update.lastRunAt } : {}),
+            ...(update.status ? { status: update.status } : {}),
+          }
           : monitor,
       ),
     );
@@ -316,9 +316,9 @@ export function SearchPreferencesProvider({ children }: { children: React.ReactN
       current.map((monitor) =>
         monitor.id === id
           ? {
-              ...monitor,
-              status: monitor.status === "active" ? "paused" : "active",
-            }
+            ...monitor,
+            status: monitor.status === "active" ? "paused" : "active",
+          }
           : monitor,
       ),
     );
@@ -329,9 +329,9 @@ export function SearchPreferencesProvider({ children }: { children: React.ReactN
       current.map((monitor) =>
         monitor.id === id
           ? {
-              ...monitor,
-              latestNotices: notices,
-            }
+            ...monitor,
+            latestNotices: notices,
+          }
           : monitor,
       ),
     );

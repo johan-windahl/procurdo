@@ -4,11 +4,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Modal } from "@/components/ui/modal";
 import { Textarea } from "@/components/ui/textarea";
+import { SearchForm } from "@/components/ui/search/SearchForm";
 import { useSearchPreferences } from "@/components/app/providers/SearchPreferencesProvider";
 import { useToast } from "@/components/ui/toast";
 import { filtersToQueryString, summarizeFilters } from "@/lib/search/utils";
+import type { Filters } from "@/lib/search/types";
 
 const dateFormatter = new Intl.DateTimeFormat("sv-SE", { dateStyle: "medium" });
 
@@ -25,8 +26,7 @@ export function SavedSearchesClient() {
   const { savedSearches, updateSavedSearch, deleteSavedSearch } = useSearchPreferences();
 
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editModalOpen, setEditModalOpen] = useState(false);
-  const [editForm, setEditForm] = useState({ name: "", description: "" });
+  const [editForm, setEditForm] = useState({ name: "", description: "", filters: {} as Filters });
 
   const sortedSearches = useMemo(
     () => [...savedSearches].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
@@ -49,8 +49,14 @@ export function SavedSearchesClient() {
     const search = savedSearches.find((item) => item.id === id);
     if (!search) return;
     setEditingId(id);
-    setEditForm({ name: search.name, description: search.description ?? "" });
-    setEditModalOpen(true);
+    setEditForm({
+      name: search.name,
+      description: search.description ?? "",
+      filters: {
+        ...search.filters,
+        cpvs: [...search.filters.cpvs],
+      },
+    });
   };
 
   const handleUpdate = () => {
@@ -58,9 +64,14 @@ export function SavedSearchesClient() {
     updateSavedSearch(editingId, {
       name: editForm.name.trim(),
       description: editForm.description.trim() ? editForm.description.trim() : undefined,
+      filters: editForm.filters,
     });
-    setEditModalOpen(false);
+    setEditingId(null);
     push({ title: "Sökning uppdaterad" });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
   };
 
   const handleDelete = (id: string) => {
@@ -84,7 +95,7 @@ export function SavedSearchesClient() {
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl font-semibold">Sparade sökningar</h1>
         <p className="text-sm text-muted-foreground">
-          Hantera sparade filterset för upphandlingar. Kör dem direkt eller justera namn och anteckningar.
+          Hantera sparade filterset för upphandlingar. Kör dem direkt eller redigera namn, beskrivning och sökfilter direkt i tabellen.
         </p>
       </div>
 
@@ -115,9 +126,65 @@ export function SavedSearchesClient() {
             </thead>
             <tbody className="divide-y divide-border/70 text-sm">
               {paginatedSearches.map((search) => {
+                const isEditing = editingId === search.id;
                 const summary = summarizeFilters(search.filters);
                 const visible = summary.slice(0, 3);
                 const remaining = summary.length - visible.length;
+
+                if (isEditing) {
+                  return (
+                    <tr key={search.id}>
+                      <td colSpan={4} className="px-4 py-6">
+                        <div className="space-y-6">
+                          <div className="space-y-4">
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium" htmlFor={`edit-name-${search.id}`}>
+                                Namn
+                              </label>
+                              <Input
+                                id={`edit-name-${search.id}`}
+                                value={editForm.name}
+                                onChange={(e) => setEditForm((prev) => ({ ...prev, name: e.target.value }))}
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium" htmlFor={`edit-description-${search.id}`}>
+                                Beskrivning
+                              </label>
+                              <Textarea
+                                id={`edit-description-${search.id}`}
+                                value={editForm.description}
+                                onChange={(e) => setEditForm((prev) => ({ ...prev, description: e.target.value }))}
+                                placeholder="Valfritt"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="space-y-3">
+                            <div className="border-t pt-4">
+                              <h3 className="text-sm font-medium mb-3">Sökfilter</h3>
+                              <SearchForm
+                                key={editingId}
+                                initial={editForm.filters}
+                                onSearch={(filters) => setEditForm((prev) => ({ ...prev, filters }))}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="flex justify-end gap-2 pt-4 border-t">
+                            <Button variant="ghost" type="button" onClick={handleCancelEdit}>
+                              Avbryt
+                            </Button>
+                            <Button type="button" onClick={handleUpdate} disabled={!editForm.name.trim()}>
+                              Spara ändringar
+                            </Button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                }
+
                 return (
                   <tr key={search.id} className="hover:bg-muted/40">
                     <td className="px-4 py-3 align-top">
@@ -198,46 +265,6 @@ export function SavedSearchesClient() {
         </div>
       ) : null}
 
-      <Modal
-        open={editModalOpen}
-        onClose={() => setEditModalOpen(false)}
-        title="Redigera sparad sökning"
-        description="Uppdatera namnet eller lägg till en anteckning. Filtersättet behålls som tidigare."
-        footer={
-          <>
-            <Button variant="ghost" type="button" onClick={() => setEditModalOpen(false)}>
-              Avbryt
-            </Button>
-            <Button type="button" onClick={handleUpdate} disabled={!editForm.name.trim()}>
-              Spara ändringar
-            </Button>
-          </>
-        }
-      >
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium" htmlFor="edit-name">
-              Namn
-            </label>
-            <Input
-              id="edit-name"
-              value={editForm.name}
-              onChange={(e) => setEditForm((prev) => ({ ...prev, name: e.target.value }))}
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium" htmlFor="edit-description">
-              Beskrivning
-            </label>
-            <Textarea
-              id="edit-description"
-              value={editForm.description}
-              onChange={(e) => setEditForm((prev) => ({ ...prev, description: e.target.value }))}
-              placeholder="Valfritt"
-            />
-          </div>
-        </div>
-      </Modal>
     </div>
   );
 }

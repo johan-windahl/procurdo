@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import data from "@/data/cpv.json";
 
 type Node = {
@@ -12,6 +12,13 @@ type Node = {
 type Props = {
   value: string[];
   onChange: (codes: string[]) => void;
+};
+
+const normalizeCode = (code: string): string => {
+  const digits = code.replace(/\D/g, "");
+  if (!digits) return "";
+  if (digits.length >= 8) return digits.slice(0, 8);
+  return digits.padEnd(8, "0");
 };
 
 export function CPVSelector({ value, onChange }: Props) {
@@ -28,6 +35,23 @@ export function CPVSelector({ value, onChange }: Props) {
   const topLevelNodes = useMemo(() => {
     return (data as Node[]).filter((node) => node.code.endsWith("000000"));
   }, []);
+
+  const getAncestorCodes = useCallback(
+    (code: string): string[] => {
+      const normalized = normalizeCode(code);
+      if (!normalized) return [];
+      const ancestors: string[] = [];
+      for (let i = 2; i < normalized.length; i += 1) {
+        const candidate = `${normalized.slice(0, i)}${"0".repeat(8 - i)}`;
+        if (candidate === normalized) continue;
+        if (nodeMap.has(candidate)) {
+          ancestors.push(candidate);
+        }
+      }
+      return ancestors;
+    },
+    [nodeMap],
+  );
 
   const getChildrenForNode = useMemo(() => {
     return (nodeCode: string): Node[] => {
@@ -88,6 +112,29 @@ export function CPVSelector({ value, onChange }: Props) {
       return children;
     };
   }, [nodeMap]);
+
+  useEffect(() => {
+    setExpandedNodes((prev) => {
+      let changed = false;
+      const next = new Set(prev);
+      value.forEach((code) => {
+        const normalized = normalizeCode(code);
+        if (!normalized) return;
+        getAncestorCodes(normalized).forEach((ancestor) => {
+          if (!next.has(ancestor)) {
+            next.add(ancestor);
+            changed = true;
+          }
+        });
+        const children = getChildrenForNode(normalized);
+        if (children.length > 0 && !next.has(normalized)) {
+          next.add(normalized);
+          changed = true;
+        }
+      });
+      return changed ? next : prev;
+    });
+  }, [value, getAncestorCodes, getChildrenForNode]);
 
   const toggleExpansion = (nodeCode: string) => {
     setExpandedNodes((prev) => {
