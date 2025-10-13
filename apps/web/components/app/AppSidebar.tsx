@@ -24,11 +24,11 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
-  { label: "Dashboard", href: "/sv-se/dashboard", icon: LayoutDashboard },
-  { label: "Sök", href: "/sv-se/sok", icon: Search },
-  { label: "Sparade sökningar", href: "/sv-se/sparade-sokningar", icon: Bookmark },
-  { label: "Bevakningar", href: "/sv-se/bevakningar", icon: BellRing },
-  { label: "Bevakade upphandlingar", href: "/sv-se/bevakade-upphandlingar", icon: FileSearch },
+  { label: "Dashboard", href: "/app/sv-se/dashboard", icon: LayoutDashboard },
+  { label: "Sök", href: "/app/sv-se/sok", icon: Search },
+  { label: "Sparade sökningar", href: "/app/sv-se/sparade-sokningar", icon: Bookmark },
+  { label: "Bevakningar", href: "/app/sv-se/bevakningar", icon: BellRing },
+  { label: "Bevakade upphandlingar", href: "/app/sv-se/bevakade-upphandlingar", icon: FileSearch },
 ];
 
 export function AppSidebar() {

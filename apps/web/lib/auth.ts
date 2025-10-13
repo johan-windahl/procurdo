@@ -8,7 +8,7 @@ export type AuthedUser = {
 export async function requireUser(): Promise<AuthedUser> {
   const { userId, redirectToSignIn } = await auth();
   if (!userId) {
-    return redirectToSignIn({ returnBackUrl: "/sv-se/app" });
+    return redirectToSignIn({ returnBackUrl: "/app" });
   }
   const user = await currentUser();
   return {
