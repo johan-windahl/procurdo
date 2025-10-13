@@ -9,6 +9,7 @@ type Size = "sm" | "md" | "lg" | "icon";
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: Variant;
   size?: Size;
+  redirectUrl?: string; // Ignore this prop if passed from SignInButton
 };
 
 const baseStyles =

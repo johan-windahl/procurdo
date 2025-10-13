@@ -3,6 +3,7 @@ import Script from "next/script";
 import { Suspense } from "react";
 import Analytics from "@/components/app/Analytics";
 import CookieConsent from "@/components/app/CookieConsent";
+import { Providers } from "@/components/app/Providers";
 import { Inter, Inconsolata } from "next/font/google";
 import "./globals.css";
 
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
     "Sök offentliga upphandlingar i Sverige. Bevakning av aktuella upphandlingar, ramavtal och anbud – snabbt och gratis att komma igång.",
   openGraph: {
     type: "website",
-    url: "https://www.procurdo.com/sv-se",
+    url: "https://www.procurdo.com/",
     siteName: "Procurdo",
     title: "Procurdo – Sök offentliga upphandlingar i Sverige",
     description:
@@ -118,7 +119,7 @@ export default function RootLayout({
         ) : null}
         {/* Cookie Banner */}
         {isProd ? <CookieConsent /> : null}
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

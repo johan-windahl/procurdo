@@ -8,11 +8,11 @@ export default clerkMiddleware(async (auth, req) => {
   const pathname = url.pathname;
 
   const legacyAppRedirects: Record<string, string> = {
-    "/sv-se/dashboard": "/app/sv-se/dashboard",
-    "/sv-se/sok": "/app/sv-se/sok",
-    "/sv-se/sparade-sokningar": "/app/sv-se/sparade-sokningar",
-    "/sv-se/bevakningar": "/app/sv-se/bevakningar",
-    "/sv-se/bevakade-upphandlingar": "/app/sv-se/bevakade-upphandlingar",
+    "/sv-se/dashboard": "/app/dashboard",
+    "/sv-se/sok": "/app/sok",
+    "/sv-se/sparade-sokningar": "/app/sparade-sokningar",
+    "/sv-se/bevakningar": "/app/bevakningar",
+    "/sv-se/bevakade-upphandlingar": "/app/bevakade-upphandlingar",
   };
 
   const destination = legacyAppRedirects[pathname];
@@ -21,20 +21,22 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.redirect(url, 308);
   }
 
-  // Canonicalize locales for marketing routes: force sv-se
+  if (pathname === "/app/sv-se" || pathname === "/app/sv-se/") {
+    url.pathname = "/app";
+    return NextResponse.redirect(url, 308);
+  }
+
+  if (pathname.startsWith("/app/sv-se/")) {
+    url.pathname = pathname.replace("/app/sv-se", "/app");
+    return NextResponse.redirect(url, 308);
+  }
+
   // Avoid affecting protected /app routes and API
   const isApp = pathname.startsWith("/app") || pathname.startsWith("/api") || pathname.startsWith("/trpc");
   if (!isApp) {
-    // Root -> /sv-se
-    if (pathname === "/") {
-      url.pathname = "/sv-se";
-      return NextResponse.redirect(url, 308);
-    }
-
-    // Normalize common English locale prefixes to /sv-se
-    const lowerPath = pathname.toLowerCase();
-    if (lowerPath === "/en-us" || lowerPath.startsWith("/en-us/") || lowerPath === "/en" || lowerPath.startsWith("/en/")) {
-      url.pathname = pathname.replace(/^\/en(-US)?/i, "/sv-se");
+    if (pathname === "/sv-se" || pathname.startsWith("/sv-se/")) {
+      const stripped = pathname.replace(/^\/sv-se/, "") || "/";
+      url.pathname = stripped.startsWith("/") ? stripped : `/${stripped}`;
       return NextResponse.redirect(url, 308);
     }
   }

@@ -4,7 +4,7 @@ export function buildWebsiteJsonLd(params: {
   searchPath?: string;
   siteName?: string;
 }) {
-  const { baseUrl, localePath = "/sv-se", searchPath = "/sv-se/sok-upphandling", siteName = "Procurdo" } = params;
+  const { baseUrl, localePath = "/", searchPath = "/sok-upphandling", siteName = "Procurdo" } = params;
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -20,7 +20,7 @@ export function buildWebsiteJsonLd(params: {
 
 export function buildArticleJsonLd(params: {
   baseUrl: string;
-  urlPath: string; // e.g. /sv-se/resurser/anbudsskrivning
+  urlPath: string; // e.g. /resurser/anbudsskrivning
   headline: string;
   description: string;
   image?: string;

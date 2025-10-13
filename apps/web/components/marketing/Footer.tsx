@@ -10,8 +10,8 @@ export function Footer() {
           </p>
         </div>
         <nav className="flex gap-6 text-sm text-muted-foreground">
-          <Link href="/sv-se#kontakt" className="hover:text-foreground">Kontakt</Link>
-          <Link href="/sv-se/integritet" className="hover:text-foreground">Integritet</Link>
+          <Link href="/#kontakt" className="hover:text-foreground">Kontakt</Link>
+          <Link href="/integritet" className="hover:text-foreground">Integritet</Link>
         </nav>
       </div>
     </footer>

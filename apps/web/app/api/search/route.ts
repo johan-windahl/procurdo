@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import type { Filters } from "@/lib/search/types";
 
 // Loosely typed helpers for the TED API payloads
 type LangObject = Record<string, unknown>;
@@ -41,19 +42,6 @@ type TEDSearchResponse = {
   notices?: TEDNotice[];
   totalNoticeCount?: number | string;
   error?: TEDError;
-};
-
-type Filters = {
-  cpvs: string[];
-  text: string;
-  dateFrom: string;
-  deadlineTo?: string;
-  country: string;
-  city: string;
-  status: "ongoing" | "completed";
-  noticeType?: string;
-  valueMin?: number | string;
-  valueMax?: number | string;
 };
 
 const isRecord = (v: unknown): v is Record<string, unknown> =>

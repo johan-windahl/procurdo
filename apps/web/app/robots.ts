@@ -6,11 +6,10 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: ["/sv-se"],
+        allow: ["/"],
         disallow: ["/app"],
       },
     ],
     sitemap: `${base}/sitemap.xml`,
   };
 }
-
