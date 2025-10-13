@@ -123,18 +123,8 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
       }
     }
 
-    // Show advanced filters if any advanced options are set
-    const shouldShowAdvanced =
-      (normalizedInitial.cpvs && normalizedInitial.cpvs.length > 0) ||
-      normalizedInitial.deadlineTo ||
-      normalizedInitial.city ||
-      normalizedInitial.noticeType ||
-      normalizedInitial.valueMin ||
-      normalizedInitial.valueMax;
-
-    if (shouldShowAdvanced) {
-      setShowAdvanced(true);
-    }
+    // Don't auto-expand advanced search when loading saved searches
+    // Users can manually toggle it if they want to see/edit advanced filters
   }, [normalizedInitial]);
 
   const calculateDaysFromNow = (dateString: string): number | null => {
