@@ -223,8 +223,6 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
         </button>
       </div>
 
-      {actions ? <div className="mt-2 flex flex-wrap gap-3">{actions}</div> : null}
-
       <div
         className={cn(
           "space-y-5",
@@ -367,7 +365,8 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
         </div>
       </div>
 
-      <div className="flex justify-end mt-6">
+      <div className="flex justify-between items-center mt-6">
+        {actions ? <div className="flex flex-wrap gap-3">{actions}</div> : <div></div>}
         <Button type="submit" size="lg" className="px-8">
           Sök
         </Button>
