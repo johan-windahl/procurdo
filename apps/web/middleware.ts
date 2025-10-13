@@ -7,6 +7,20 @@ export default clerkMiddleware(async (auth, req) => {
   const url = req.nextUrl;
   const pathname = url.pathname;
 
+  const legacyAppRedirects: Record<string, string> = {
+    "/sv-se/dashboard": "/app/sv-se/dashboard",
+    "/sv-se/sok": "/app/sv-se/sok",
+    "/sv-se/sparade-sokningar": "/app/sv-se/sparade-sokningar",
+    "/sv-se/bevakningar": "/app/sv-se/bevakningar",
+    "/sv-se/bevakade-upphandlingar": "/app/sv-se/bevakade-upphandlingar",
+  };
+
+  const destination = legacyAppRedirects[pathname];
+  if (destination) {
+    url.pathname = destination;
+    return NextResponse.redirect(url, 308);
+  }
+
   // Canonicalize locales for marketing routes: force sv-se
   // Avoid affecting protected /app routes and API
   const isApp = pathname.startsWith("/app") || pathname.startsWith("/api") || pathname.startsWith("/trpc");
@@ -27,7 +41,9 @@ export default clerkMiddleware(async (auth, req) => {
 
   if (isProtectedRoute(req)) {
     const { userId, redirectToSignIn } = await auth();
-    if (!userId) return redirectToSignIn();
+    if (!userId) {
+      return redirectToSignIn({ returnBackUrl: url.toString() });
+    }
   }
 });
 

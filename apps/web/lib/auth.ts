@@ -6,10 +6,9 @@ export type AuthedUser = {
 };
 
 export async function requireUser(): Promise<AuthedUser> {
-  const { userId } = await auth();
+  const { userId, redirectToSignIn } = await auth();
   if (!userId) {
-    // Clerk middleware should protect already; this is a safety net
-    throw new Error("Unauthorized");
+    return redirectToSignIn({ returnBackUrl: "/app" });
   }
   const user = await currentUser();
   return {
