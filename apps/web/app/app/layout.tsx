@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   return (
-    <ClerkProvider afterSignOutUrl="/sv-se" afterSignInUrl="/app/sv-se/dashboard">
+    <ClerkProvider afterSignOutUrl="/" afterSignInUrl="/app/dashboard">
       <SearchPreferencesProvider>
         <div className="flex min-h-dvh flex-col bg-background">
           <AppHeader />

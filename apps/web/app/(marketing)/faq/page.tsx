@@ -7,12 +7,12 @@ export const metadata: Metadata = {
   title: "FAQ – Offentlig upphandling",
   description:
     "Vanliga frågor om offentlig upphandling. Lär dig grunderna i LOU och vad en offentlig upphandling är – och kom igång att söka upphandlingar gratis.",
-  alternates: { canonical: "/sv-se/faq" },
+  alternates: { canonical: "/faq" },
   openGraph: {
     title: "FAQ – Offentlig upphandling",
     description:
       "Läs om Lagen om offentlig upphandling (LOU) och vad offentlig upphandling innebär.",
-    url: "https://www.procurdo.com/sv-se/faq",
+    url: "https://www.procurdo.com/faq",
     siteName: "Procurdo",
   },
   twitter: {
@@ -74,7 +74,7 @@ export default function FAQIndexPage() {
             – från grunderna till lagen (LOU). Utforska ämnena nedan.
           </p>
           <div className="mt-8">
-            <Link href="/sv-se/sok-upphandling">
+            <Link href="/sok-upphandling">
               <Button size="lg">Sök upphandlingar</Button>
             </Link>
           </div>
@@ -83,7 +83,7 @@ export default function FAQIndexPage() {
 
       <section className="mx-auto max-w-6xl px-4 sm:px-6 py-16 md:py-24">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <Link href="/sv-se/faq/vad-ar-den-offentliga-sektorn" className="group rounded-xl border p-6 hover:shadow-sm transition-shadow">
+          <Link href="/faq/vad-ar-den-offentliga-sektorn" className="group rounded-xl border p-6 hover:shadow-sm transition-shadow">
             <div className="flex items-start gap-4">
               <div className="h-10 w-10 rounded-lg bg-[#e1f0fb] flex items-center justify-center text-[#0a66c2]">🏛️</div>
               <div>
@@ -94,7 +94,7 @@ export default function FAQIndexPage() {
               </div>
             </div>
           </Link>
-          <Link href="/sv-se/faq/vad-ar-en-offentlig-upphandling" className="group rounded-xl border p-6 hover:shadow-sm transition-shadow">
+          <Link href="/faq/vad-ar-en-offentlig-upphandling" className="group rounded-xl border p-6 hover:shadow-sm transition-shadow">
             <div className="flex items-start gap-4">
               <div className="h-10 w-10 rounded-lg bg-[#e1f0fb] flex items-center justify-center text-[#0a66c2]">ℹ️</div>
               <div>
@@ -105,7 +105,7 @@ export default function FAQIndexPage() {
               </div>
             </div>
           </Link>
-          <Link href="/sv-se/faq/lagen-om-offentlig-upphandling" className="group rounded-xl border p-6 hover:shadow-sm transition-shadow">
+          <Link href="/faq/lagen-om-offentlig-upphandling" className="group rounded-xl border p-6 hover:shadow-sm transition-shadow">
             <div className="flex items-start gap-4">
               <div className="h-10 w-10 rounded-lg bg-[#bcffae] flex items-center justify-center text-[#1a7f37]">📜</div>
               <div>
@@ -116,7 +116,7 @@ export default function FAQIndexPage() {
               </div>
             </div>
           </Link>
-          <Link href="/sv-se/faq/finns-alla-upphandlingar" className="group rounded-xl border p-6 hover:shadow-sm transition-shadow">
+          <Link href="/faq/finns-alla-upphandlingar" className="group rounded-xl border p-6 hover:shadow-sm transition-shadow">
             <div className="flex items-start gap-4">
               <div className="h-10 w-10 rounded-lg bg-[#ffe6a7] flex items-center justify-center text-[#8a6200]">🔎</div>
               <div>

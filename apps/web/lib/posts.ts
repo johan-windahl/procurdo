@@ -1,6 +1,8 @@
+export type Locale = "sv" | "en" | "fi" | "no";
+
 export type PostMeta = {
   slug: string;
-  locale: "sv-se";
+  locale: Locale;
   title: string;
   description: string;
   publishedAt: string; // ISO string
@@ -13,7 +15,7 @@ export type PostMeta = {
 export const posts: PostMeta[] = [
   {
     slug: "anbudsskrivning",
-    locale: "sv-se",
+    locale: "sv",
     title: "Anbudsskrivning: komplett guide för att vinna upphandlingar",
     description:
       "Lär dig anbudsskrivning steg för steg: kravanalys, metodik, prissättning, kvalitetskriterier och vanliga fallgropar. Praktiska checklistor och exempel.",
@@ -24,11 +26,10 @@ export const posts: PostMeta[] = [
   },
 ];
 
-export function getPostsByLocale(locale: PostMeta["locale"]) {
+export function getPostsByLocale(locale: Locale) {
   return posts.filter((p) => p.locale === locale);
 }
 
-export function getPostBySlug(slug: string, locale: PostMeta["locale"]) {
+export function getPostBySlug(slug: string, locale: Locale) {
   return posts.find((p) => p.slug === slug && p.locale === locale) || null;
 }
-

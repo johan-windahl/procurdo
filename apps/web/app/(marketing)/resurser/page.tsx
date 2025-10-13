@@ -8,12 +8,12 @@ export const metadata: Metadata = {
   },
   description:
     "Artiklar och guider om offentlig upphandling, anbudsskrivning och ramavtal. Praktiska checklistor och exempel som hjälper dig vinna fler affärer.",
-  alternates: { canonical: "/sv-se/resurser" },
+  alternates: { canonical: "/resurser" },
   openGraph: {
     title: "Resurser – Offentlig upphandling & anbud | Procurdo",
     description:
       "Guider och resurser om upphandling, anbudsskrivning och ramavtal.",
-    url: "https://www.procurdo.com/sv-se/resurser",
+    url: "https://www.procurdo.com/resurser",
     siteName: "Procurdo",
     type: "website",
   },
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  const posts = getPostsByLocale("sv-se");
+  const posts = getPostsByLocale("sv");
   return (
     <section className="mx-auto max-w-6xl px-5 sm:px-8 py-16 md:py-24">
       <div className="mb-10 text-center">
@@ -43,7 +43,7 @@ export default function Page() {
         {posts.map((post) => (
           <Link
             key={post.slug}
-            href={`/sv-se/resurser/${post.slug}`}
+            href={`/resurser/${post.slug}`}
             className="group rounded-xl border bg-card hover:bg-accent/20 transition-colors"
           >
             <div className="p-6">
@@ -75,4 +75,3 @@ export default function Page() {
     </section>
   );
 }
-

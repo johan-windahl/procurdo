@@ -13,12 +13,12 @@ export const metadata: Metadata = {
     "tröskelvärden upphandling",
     "upphandlingsförfaranden",
   ],
-  alternates: { canonical: "/sv-se/faq/lagen-om-offentlig-upphandling" },
+  alternates: { canonical: "/faq/lagen-om-offentlig-upphandling" },
   openGraph: {
     title: "Lagen om offentlig upphandling (LOU)",
     description:
       "Vad säger LOU? En praktisk guide till principer, tröskelvärden och förfaranden.",
-    url: "https://www.procurdo.com/sv-se/faq/lagen-om-offentlig-upphandling",
+    url: "https://www.procurdo.com/faq/lagen-om-offentlig-upphandling",
     siteName: "Procurdo",
   },
   twitter: {
@@ -102,7 +102,7 @@ export default function LOUPage() {
               </ul>
               <p>
                 Se aktuella annonser och ramavtal: {" "}
-                <Link href="/sv-se/sok-upphandling" className="underline">Sök upphandlingar</Link>.
+                <Link href="/sok-upphandling" className="underline">Sök upphandlingar</Link>.
               </p>
             </article>
           </div>
@@ -119,12 +119,12 @@ export default function LOUPage() {
               <h3 className="font-semibold">Relaterat</h3>
               <ul className="mt-2 text-sm text-muted-foreground space-y-1">
                 <li>
-                  <Link href="/sv-se/faq/vad-ar-en-offentlig-upphandling" className="underline">
+                  <Link href="/faq/vad-ar-en-offentlig-upphandling" className="underline">
                     Vad är en offentlig upphandling?
                   </Link>
                 </li>
                 <li>
-                  <Link href="/sv-se/sok-upphandling?q=ramavtal" className="underline">
+                  <Link href="/sok-upphandling?q=ramavtal" className="underline">
                     Sök ramavtal
                   </Link>
                 </li>

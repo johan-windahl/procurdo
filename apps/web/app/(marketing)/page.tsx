@@ -19,13 +19,13 @@ export const metadata: Metadata = {
     "sök ramavtal",
   ],
   alternates: {
-    canonical: "/sv-se",
+    canonical: "/",
   },
   openGraph: {
     title: "Sök offentliga upphandlingar gratis | Procurdo Sverige",
     description:
       "Hitta aktuella upphandlingar och sök ramavtal kostnadsfritt i Sverige.",
-    url: "https://www.procurdo.com/sv-se",
+    url: "https://www.procurdo.com/",
     siteName: "Procurdo",
     type: "website",
     images: [
@@ -81,11 +81,11 @@ export default function Page() {
           </p>
           <h2 className="sr-only">Sök upphandling enkelt – helt gratis</h2>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-3">
-            <Link href="/sv-se/sok-upphandling" className="w-full sm:w-auto">
+            <Link href="/sok-upphandling" className="w-full sm:w-auto">
               <Button size="lg" className="w-full sm:w-auto whitespace-nowrap">Sök upphandlingar nu</Button>
             </Link>
             <Link
-              href="/sv-se/sok-upphandling?q=ramavtal"
+              href="/sok-upphandling?q=ramavtal"
               className="text-sm font-medium underline-offset-4 hover:underline"
             >
               Utforska ramavtal

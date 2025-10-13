@@ -5,12 +5,12 @@ export const metadata: Metadata = {
   title: "Integritetspolicy",
   description:
     "Läs hur Procurdo hanterar personuppgifter och cookies. Vi samlar in minsta möjliga data och du kan när som helst ändra ditt samtycke.",
-  alternates: { canonical: "/sv-se/integritet" },
+  alternates: { canonical: "/integritet" },
   openGraph: {
     title: "Integritetspolicy",
     description:
       "Information om personuppgifter, cookies, samtycke, lagring och dina rättigheter hos Procurdo.",
-    url: "https://www.procurdo.com/sv-se/integritet",
+    url: "https://www.procurdo.com/integritet",
     siteName: "Procurdo",
   },
   twitter: {
@@ -118,4 +118,3 @@ export default function PrivacyPage() {
     </>
   );
 }
-

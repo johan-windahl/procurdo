@@ -17,12 +17,12 @@ export const metadata: Metadata = {
     "myndigheter",
     "offentligt ägda bolag",
   ],
-  alternates: { canonical: "/sv-se/faq/vad-ar-den-offentliga-sektorn" },
+  alternates: { canonical: "/faq/vad-ar-den-offentliga-sektorn" },
   openGraph: {
     title: "Vad är den offentliga sektorn?",
     description:
       "Definition, avgränsningar och exempel på vad som ingår i offentlig sektor i Sverige.",
-    url: "https://www.procurdo.com/sv-se/faq/vad-ar-den-offentliga-sektorn",
+    url: "https://www.procurdo.com/faq/vad-ar-den-offentliga-sektorn",
     siteName: "Procurdo",
   },
   twitter: {
@@ -38,9 +38,9 @@ const websiteJsonLd = buildWebsiteJsonLd({ baseUrl: "https://www.procurdo.com" }
 const breadcrumbJsonLd = buildBreadcrumbJsonLd({
   baseUrl: "https://www.procurdo.com",
   items: [
-    { name: "Startsida", url: "/sv-se" },
-    { name: "FAQ", url: "/sv-se/faq" },
-    { name: "Vad är den offentliga sektorn?", url: "/sv-se/faq/vad-ar-den-offentliga-sektorn" },
+    { name: "Startsida", url: "/" },
+    { name: "FAQ", url: "/faq" },
+    { name: "Vad är den offentliga sektorn?", url: "/faq/vad-ar-den-offentliga-sektorn" },
   ],
 });
 
@@ -125,10 +125,10 @@ export default function PublicSectorFAQPage() {
                 Här förklarar vi vad som menas med offentlig sektor i Sverige – vad som ingår, vad som inte gör det, hur den finansieras och varför den spelar roll för företag som vill sälja till det offentliga.
               </p>
               <div className="mt-6 flex gap-3">
-                <Link href="/sv-se/sok-upphandling">
+                <Link href="/sok-upphandling">
                   <Button size="lg">Sök upphandlingar</Button>
                 </Link>
-                <Link href="/sv-se/faq/lagen-om-offentlig-upphandling" className="inline-flex">
+                <Link href="/faq/lagen-om-offentlig-upphandling" className="inline-flex">
                   <Button variant="outline" size="lg">Läs om LOU</Button>
                 </Link>
               </div>
@@ -224,7 +224,7 @@ export default function PublicSectorFAQPage() {
               <h2>Offentlig upphandling (LOU)</h2>
               <p>
                 När offentlig sektor köper varor och tjänster gäller särskilda regler –
-                <Link href="/sv-se/faq/lagen-om-offentlig-upphandling" className="underline">
+                <Link href="/faq/lagen-om-offentlig-upphandling" className="underline">
                   Lagen om offentlig upphandling (LOU)
                 </Link>
                 . Upphandlingar annonseras och utvärderas för att säkerställa konkurrens och
@@ -232,11 +232,11 @@ export default function PublicSectorFAQPage() {
               </p>
               <p>
                 Vill du förstå processen? Läs {" "}
-                <Link href="/sv-se/faq/vad-ar-en-offentlig-upphandling" className="underline">
+                <Link href="/faq/vad-ar-en-offentlig-upphandling" className="underline">
                   Vad är en offentlig upphandling?
                 </Link>
                 . Eller gå direkt till att {" "}
-                <Link href="/sv-se/sok-upphandling" className="underline">
+                <Link href="/sok-upphandling" className="underline">
                   söka upphandlingar
                 </Link>
                 .
@@ -286,17 +286,17 @@ export default function PublicSectorFAQPage() {
               <h3 className="font-semibold">Relaterat</h3>
               <ul className="mt-2 text-sm text-muted-foreground space-y-1">
                 <li>
-                  <Link href="/sv-se/faq/vad-ar-en-offentlig-upphandling" className="underline">
+                  <Link href="/faq/vad-ar-en-offentlig-upphandling" className="underline">
                     Vad är en offentlig upphandling?
                   </Link>
                 </li>
                 <li>
-                  <Link href="/sv-se/faq/lagen-om-offentlig-upphandling" className="underline">
+                  <Link href="/faq/lagen-om-offentlig-upphandling" className="underline">
                     Lagen om offentlig upphandling (LOU)
                   </Link>
                 </li>
                 <li>
-                  <Link href="/sv-se/sok-upphandling" className="underline">
+                  <Link href="/sok-upphandling" className="underline">
                     Sök upphandlingar
                   </Link>
                 </li>
@@ -308,4 +308,3 @@ export default function PublicSectorFAQPage() {
     </>
   );
 }
-

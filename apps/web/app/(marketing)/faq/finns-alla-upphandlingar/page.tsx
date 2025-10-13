@@ -11,12 +11,12 @@ export const metadata: Metadata = {
     "alla offentliga upphandlingar",
     "offentlig upphandling",
   ],
-  alternates: { canonical: "/sv-se/faq/finns-alla-upphandlingar" },
+  alternates: { canonical: "/faq/finns-alla-upphandlingar" },
   openGraph: {
     title: "Finns alla upphandlingar?",
     description:
       "Varför finns ingen fullständig samlad databas i Sverige och hur annonsering fungerar (nationellt och inom EU).",
-    url: "https://www.procurdo.com/sv-se/faq/finns-alla-upphandlingar",
+    url: "https://www.procurdo.com/faq/finns-alla-upphandlingar",
     siteName: "Procurdo",
   },
   twitter: {
@@ -140,7 +140,7 @@ export default function AllTendersPage() {
 
               <p>
                 Vill du se aktuella annonser? {" "}
-                <Link href="/sv-se/sok-upphandling" className="underline">Sök upphandlingar</Link>.
+                <Link href="/sok-upphandling" className="underline">Sök upphandlingar</Link>.
               </p>
 
               <h2>Källor</h2>
@@ -172,12 +172,12 @@ export default function AllTendersPage() {
               <h3 className="font-semibold">Relaterat</h3>
               <ul className="mt-2 text-sm text-muted-foreground space-y-1">
                 <li>
-                  <Link href="/sv-se/faq/vad-ar-en-offentlig-upphandling" className="underline">
+                  <Link href="/faq/vad-ar-en-offentlig-upphandling" className="underline">
                     Vad är en offentlig upphandling?
                   </Link>
                 </li>
                 <li>
-                  <Link href="/sv-se/faq/lagen-om-offentlig-upphandling" className="underline">
+                  <Link href="/faq/lagen-om-offentlig-upphandling" className="underline">
                     Lagen om offentlig upphandling (LOU)
                   </Link>
                 </li>

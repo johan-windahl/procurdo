@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
@@ -9,15 +10,18 @@ import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
 type NavItem = { label: string; href: string };
 
 const nav: NavItem[] = [
-  { label: "Funktioner", href: "/sv-se#funktioner" },
-  { label: "Resurser", href: "/sv-se/resurser" },
-  { label: "FAQ", href: "/sv-se/faq" },
-  { label: "Kontakt", href: "/sv-se#kontakt" },
+  { label: "Funktioner", href: "/#funktioner" },
+  { label: "Resurser", href: "/resurser" },
+  { label: "FAQ", href: "/faq" },
+  { label: "Kontakt", href: "/#kontakt" },
 ];
 
 export function Header() {
   const [open, setOpen] = useState(false);
   const { isSignedIn } = useUser();
+  const pathname = usePathname();
+  const isMarketingRoute = !pathname.startsWith("/app");
+  const menuItems = isMarketingRoute && isSignedIn ? [...nav, { label: "Dashboard", href: "/app/dashboard" }] : nav;
 
   // Close on escape
   useEffect(() => {
@@ -31,12 +35,12 @@ export function Header() {
   return (
     <header className="sticky top-0 z-30 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto max-w-6xl px-5 sm:px-8 h-16 flex items-center justify-between">
-        <Link href={isSignedIn ? "/app/sv-se/dashboard" : "/sv-se"} className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <span className="text-xl font-semibold tracking-tight">Procurdo</span>
         </Link>
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-6">
-          {nav.map((item) => (
+          {menuItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -45,13 +49,13 @@ export function Header() {
               {item.label}
             </Link>
           ))}
-          {isSignedIn ? (
-            <UserButton afterSignOutUrl="/sv-se" afterSignInUrl="/app/sv-se/dashboard" />
+          {/* {isSignedIn ? (
+            <UserButton afterSignOutUrl="/" afterSignInUrl="/app/dashboard" />
           ) : (
-            <SignInButton mode="modal" forceRedirectUrl="/app/sv-se/dashboard">
+            <SignInButton mode="modal" forceRedirectUrl="/app/dashboard">
               <Button size="md">Logga in</Button>
             </SignInButton>
-          )}
+          )} */}
         </nav>
 
         {/* Mobile hamburger */}
@@ -71,7 +75,7 @@ export function Header() {
       <div id="mobile-menu" className={`md:hidden ${open ? "block" : "hidden"}`}>
         <div className="px-5 pb-6 pt-2 border-t bg-background">
           <div className="flex flex-col gap-3 py-2">
-            {nav.map((item) => (
+            {menuItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -81,14 +85,14 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
-            <div className="flex flex-col gap-2 pt-2">
-              <SignInButton mode="modal" forceRedirectUrl="/app/sv-se/dashboard">
+            {/* <div className="flex flex-col gap-2 pt-2">
+              <SignInButton mode="modal" forceRedirectUrl="/app/dashboard">
                 <Button size="lg" className="w-full" onClick={() => setOpen(false)}>
                   Logga in
                 </Button>
               </SignInButton>
-              <UserButton afterSignOutUrl="/sv-se" afterSignInUrl="/app/sv-se/dashboard" />
-            </div>
+              <UserButton afterSignOutUrl="/" afterSignInUrl="/app/dashboard" />
+            </div> */}
           </div>
         </div>
       </div>

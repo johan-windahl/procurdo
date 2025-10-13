@@ -87,7 +87,7 @@ export function SavedSearchesClient() {
     const search = savedSearches.find((item) => item.id === id);
     if (!search) return;
     const query = filtersToQueryString(search.filters);
-    router.push(`/app/sv-se/sok${query}`);
+    router.push(`/app/sok${query}`);
   };
 
   return (
@@ -108,7 +108,7 @@ export function SavedSearchesClient() {
             className="mt-4"
             variant="outline"
             type="button"
-            onClick={() => router.push("/app/sv-se/sok")}
+            onClick={() => router.push("/app/sok")}
           >
             Öppna sökflödet
           </Button>

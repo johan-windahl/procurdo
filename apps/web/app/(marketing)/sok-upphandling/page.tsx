@@ -16,13 +16,13 @@ export const metadata: Metadata = {
     "sök ramavtal",
   ],
   alternates: {
-    canonical: "/sv-se/sok-upphandling",
+    canonical: "/sok-upphandling",
   },
   openGraph: {
     title: "Hitta upphandlingar och ramavtal gratis",
     description:
       "Filtrera upphandlingar och ramavtal på CPV-koder, fritext, datum och plats.",
-    url: "https://www.procurdo.com/sv-se/sok-upphandling",
+    url: "https://www.procurdo.com/sok-upphandling",
     siteName: "Procurdo",
   },
   twitter: {

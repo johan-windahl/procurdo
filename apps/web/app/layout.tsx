@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     "Sök offentliga upphandlingar i Sverige. Bevakning av aktuella upphandlingar, ramavtal och anbud – snabbt och gratis att komma igång.",
   openGraph: {
     type: "website",
-    url: "https://www.procurdo.com/sv-se",
+    url: "https://www.procurdo.com/",
     siteName: "Procurdo",
     title: "Procurdo – Sök offentliga upphandlingar i Sverige",
     description:

@@ -4,7 +4,7 @@ import { buildArticleJsonLd, buildBreadcrumbJsonLd } from "@/lib/seo";
 import { getPostBySlug } from "@/lib/posts";
 
 const slug = "anbudsskrivning" as const;
-const post = getPostBySlug(slug, "sv-se");
+const post = getPostBySlug(slug, "sv");
 
 export const metadata: Metadata = {
   title: {
@@ -20,13 +20,13 @@ export const metadata: Metadata = {
     "kvalitetskriterier",
     "ramavtal",
   ],
-  alternates: { canonical: "/sv-se/resurser/anbudsskrivning" },
+  alternates: { canonical: "/resurser/anbudsskrivning" },
   openGraph: {
     type: "article",
     title: "Anbudsskrivning: Komplett guide (2025) – vinn fler upphandlingar",
     description:
       "Anbudsskrivning enligt LOU: förstå krav, utvärderingsgrund och kontrakt – skriv vinnande svar.",
-    url: "https://www.procurdo.com/sv-se/resurser/anbudsskrivning",
+    url: "https://www.procurdo.com/resurser/anbudsskrivning",
     siteName: "Procurdo",
     images: post?.coverImage
       ? [
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
 export default function Page() {
   const jsonLd = buildArticleJsonLd({
     baseUrl: "https://www.procurdo.com",
-    urlPath: `/sv-se/resurser/${slug}`,
+    urlPath: `/resurser/${slug}`,
     headline: "Anbudsskrivning: Komplett guide (2025) – vinn fler upphandlingar",
     description: metadata.description as string,
     image: post?.coverImage,
@@ -64,9 +64,9 @@ export default function Page() {
   const breadcrumbLd = buildBreadcrumbJsonLd({
     baseUrl: "https://www.procurdo.com",
     items: [
-      { name: "Start", url: "/sv-se" },
-      { name: "Resurser", url: "/sv-se/resurser" },
-      { name: "Anbudsskrivning", url: `/sv-se/resurser/${slug}` },
+      { name: "Start", url: "/" },
+      { name: "Resurser", url: "/resurser" },
+      { name: "Anbudsskrivning", url: `/resurser/${slug}` },
     ],
   });
 
@@ -279,7 +279,7 @@ export default function Page() {
           Vill du hitta aktuella uppdrag att öva på? Prova vår kostnadsfria sökfunktion för upphandlingar och ramavtal.
         </p>
         <p>
-          <Link href="/sv-se/sok-upphandling" className="underline underline-offset-4">Sök upphandlingar gratis</Link>
+          <Link href="/sok-upphandling" className="underline underline-offset-4">Sök upphandlingar gratis</Link>
         </p>
         <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
           <li>

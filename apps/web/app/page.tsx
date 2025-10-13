@@ -1,6 +1,12 @@
-import { redirect } from "next/navigation";
+import MarketingLayout from "./(marketing)/layout";
+import MarketingPage, { metadata } from "./(marketing)/page";
+
+export { metadata };
 
 export default function Home() {
-  // Redirect root to the Swedish marketing homepage
-  redirect("/sv-se");
+  return (
+    <MarketingLayout>
+      <MarketingPage />
+    </MarketingLayout>
+  );
 }

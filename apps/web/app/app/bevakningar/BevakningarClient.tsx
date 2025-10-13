@@ -104,7 +104,7 @@ export function BevakningarClient() {
     const search = savedSearches.find((item) => item.id === savedSearchId);
     if (!search) return;
     const query = filtersToQueryString(search.filters);
-    router.push(`/app/sv-se/sok${query}`);
+    router.push(`/app/sok${query}`);
   };
 
   const previewMonitor = previewId ? monitors.find((item) => item.id === previewId) : null;
@@ -128,7 +128,7 @@ export function BevakningarClient() {
             className="mt-4"
             variant="outline"
             type="button"
-            onClick={() => router.push("/app/sv-se/sok")}
+            onClick={() => router.push("/app/sok")}
           >
             Gå till sökflödet
           </Button>

@@ -13,12 +13,12 @@ export const metadata: Metadata = {
     "upphandling process",
     "ramavtal",
   ],
-  alternates: { canonical: "/sv-se/faq/vad-ar-en-offentlig-upphandling" },
+  alternates: { canonical: "/faq/vad-ar-en-offentlig-upphandling" },
   openGraph: {
     title: "Vad är en offentlig upphandling?",
     description:
       "En guide till grunderna i offentlig upphandling – roller, steg och tips.",
-    url: "https://www.procurdo.com/sv-se/faq/vad-ar-en-offentlig-upphandling",
+    url: "https://www.procurdo.com/faq/vad-ar-en-offentlig-upphandling",
     siteName: "Procurdo",
   },
   twitter: {
@@ -99,14 +99,14 @@ export default function WhatIsPublicProcurementPage() {
               </ul>
               <p>
                 Behöver du vägledning i själva anbudet? Läs vår {" "}
-                <Link href="/sv-se/resurser/anbudsskrivning" className="underline">
+                <Link href="/resurser/anbudsskrivning" className="underline">
                   Anbudsskrivning: komplett guide
                 </Link>
                 .
               </p>
               <p>
                 Vill du se aktuella annonser? {" "}
-                <Link href="/sv-se/sok-upphandling" className="underline">Sök upphandlingar</Link>.
+                <Link href="/sok-upphandling" className="underline">Sök upphandlingar</Link>.
               </p>
             </article>
           </div>
@@ -123,12 +123,12 @@ export default function WhatIsPublicProcurementPage() {
               <h3 className="font-semibold">Relaterat</h3>
               <ul className="mt-2 text-sm text-muted-foreground space-y-1">
                 <li>
-                  <Link href="/sv-se/faq/lagen-om-offentlig-upphandling" className="underline">
+                  <Link href="/faq/lagen-om-offentlig-upphandling" className="underline">
                     Lagen om offentlig upphandling (LOU)
                   </Link>
                 </li>
                 <li>
-                  <Link href="/sv-se/sok-upphandling?q=ramavtal" className="underline">
+                  <Link href="/sok-upphandling?q=ramavtal" className="underline">
                     Sök ramavtal
                   </Link>
                 </li>
