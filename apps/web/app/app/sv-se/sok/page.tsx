@@ -1,10 +1,12 @@
+import { Suspense } from "react";
 import { requireUser } from "@/lib/auth";
+import { SearchPageClient } from "./SearchPageClient";
 
 export default async function SokPage() {
-    await requireUser();
-    return (
-        <div className="p-6">
-            <h1 className="text-2xl font-semibold">Sök</h1>
-        </div>
-    );
+  await requireUser();
+  return (
+    <Suspense fallback={<div className="p-6">Laddar sökgränssnitt...</div>}>
+      <SearchPageClient />
+    </Suspense>
+  );
 }

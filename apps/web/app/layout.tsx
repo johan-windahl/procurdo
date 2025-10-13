@@ -3,6 +3,7 @@ import Script from "next/script";
 import { Suspense } from "react";
 import Analytics from "@/components/app/Analytics";
 import CookieConsent from "@/components/app/CookieConsent";
+import { Providers } from "@/components/app/Providers";
 import { Inter, Inconsolata } from "next/font/google";
 import "./globals.css";
 
@@ -118,7 +119,7 @@ export default function RootLayout({
         ) : null}
         {/* Cookie Banner */}
         {isProd ? <CookieConsent /> : null}
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

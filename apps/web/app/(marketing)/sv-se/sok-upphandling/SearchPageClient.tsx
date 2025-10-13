@@ -2,9 +2,11 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import SearchForm, { type Filters } from "@/components/marketing/SearchForm";
-import ResultsList, { type Notice } from "@/components/marketing/ResultsList";
+import { SearchForm } from "@/components/ui/search/SearchForm";
+import { ResultsList } from "@/components/ui/search/ResultsList";
 import Spinner from "@/components/ui/spinner";
+import type { Filters, Notice } from "@/lib/search/types";
+import { filtersToSearchParams } from "@/lib/search/utils";
 
 const defaultFilters: Filters = {
   cpvs: [],
@@ -58,22 +60,12 @@ export default function SearchPageClient() {
 
   const updateUrl = useCallback(
     (f: Filters, p: number) => {
-      const params = new URLSearchParams();
-      if (f.cpvs.length) params.set("cpv", f.cpvs.join(","));
-      if (f.text) params.set("q", f.text);
-      if (f.dateFrom) params.set("from", f.dateFrom);
-      if (f.deadlineTo) params.set("to", f.deadlineTo);
-      if (f.country) params.set("country", f.country);
-      if (f.city) params.set("city", f.city);
-      if (f.noticeType) params.set("type", f.noticeType);
-      if (f.valueMin) params.set("min", String(f.valueMin));
-      if (f.valueMax) params.set("max", String(f.valueMax));
-      if (f.status && f.status !== "ongoing") params.set("status", f.status);
+      const params = filtersToSearchParams(f);
       if (p > 1) params.set("page", String(p));
       const qs = params.toString();
       router.replace(qs ? `?${qs}` : "");
     },
-    [router]
+    [router],
   );
 
   const runSearch = useCallback(

@@ -31,7 +31,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-30 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto max-w-6xl px-5 sm:px-8 h-16 flex items-center justify-between">
-        <Link href="/sv-se" className="flex items-center gap-2">
+        <Link href={isSignedIn ? "/app/sv-se/dashboard" : "/sv-se"} className="flex items-center gap-2">
           <span className="text-xl font-semibold tracking-tight">Procurdo</span>
         </Link>
         {/* Desktop nav */}
@@ -46,12 +46,12 @@ export function Header() {
             </Link>
           ))}
           {isSignedIn ? (
-            <UserButton />
+            <UserButton afterSignOutUrl="/sv-se" />
           ) : (
             <SignInButton mode="modal">
               <Button size="md">Logga in</Button>
-            </SignInButton>)
-          }
+            </SignInButton>
+          )}
         </nav>
 
         {/* Mobile hamburger */}
