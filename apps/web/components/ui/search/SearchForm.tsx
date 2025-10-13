@@ -76,8 +76,8 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
       const base: Filters = { ...empty, ...(incoming || {}) };
       const normalizedCpvs = Array.isArray(incoming?.cpvs)
         ? incoming.cpvs
-            .map((code) => normalizeCpv(code))
-            .filter((code): code is string => Boolean(code))
+          .map((code) => normalizeCpv(code))
+          .filter((code): code is string => Boolean(code))
         : base.cpvs;
       const uniqueCpvs = Array.from(new Set(normalizedCpvs));
       return {
@@ -124,14 +124,15 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
     }
 
     // Show advanced filters if any advanced options are set
-    if (
+    const shouldShowAdvanced =
       (normalizedInitial.cpvs && normalizedInitial.cpvs.length > 0) ||
       normalizedInitial.deadlineTo ||
       normalizedInitial.city ||
       normalizedInitial.noticeType ||
       normalizedInitial.valueMin ||
-      normalizedInitial.valueMax
-    ) {
+      normalizedInitial.valueMax;
+
+    if (shouldShowAdvanced) {
       setShowAdvanced(true);
     }
   }, [normalizedInitial]);
@@ -179,6 +180,7 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
+    setShowAdvanced(false);
     onSearch(filters);
   };
 
@@ -219,15 +221,18 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
         >
           {showAdvanced ? "Dölj avancerade filter" : "Visa avancerade filter"}
         </button>
-        <Button type="submit" size="lg">
-          Sök
-        </Button>
       </div>
 
       {actions ? <div className="mt-2 flex flex-wrap gap-3">{actions}</div> : null}
 
       <div
-        className={cn("space-y-5", showAdvanced ? "block" : "hidden")}
+        className={cn(
+          "space-y-5",
+          showAdvanced ? "block" : "hidden"
+        )}
+        style={{
+          display: showAdvanced ? 'block' : 'none'
+        }}
         aria-hidden={!showAdvanced}
       >
         <div className="space-y-2">
@@ -360,6 +365,12 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
             />
           </div>
         </div>
+      </div>
+
+      <div className="flex justify-end mt-6">
+        <Button type="submit" size="lg" className="px-8">
+          Sök
+        </Button>
       </div>
     </form>
   );
