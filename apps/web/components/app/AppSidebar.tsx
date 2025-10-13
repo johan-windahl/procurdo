@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
@@ -33,8 +33,26 @@ const navItems: NavItem[] = [
 
 export function AppSidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
   const pathname = usePathname();
+
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint
+    };
+
+    checkIsMobile();
+    window.addEventListener("resize", checkIsMobile);
+
+    return () => window.removeEventListener("resize", checkIsMobile);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) {
+      setCollapsed(true);
+    }
+  }, [isMobile]);
 
   return (
     <aside
@@ -48,15 +66,17 @@ export function AppSidebar() {
           <span className={cn("text-xs font-semibold uppercase tracking-wide text-muted-foreground", collapsed && "sr-only")}>
             Navigering
           </span>
-          <Button
-            type="button"
-            size="icon"
-            variant="ghost"
-            onClick={() => setCollapsed((prev) => !prev)}
-            aria-label={collapsed ? "Expandera sidomenyn" : "Minimera sidomenyn"}
-          >
-            {collapsed ? <ChevronsRight className="h-4 w-4" /> : <ChevronsLeft className="h-4 w-4" />}
-          </Button>
+          {!isMobile && (
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={() => setCollapsed((prev) => !prev)}
+              aria-label={collapsed ? "Expandera sidomenyn" : "Minimera sidomenyn"}
+            >
+              {collapsed ? <ChevronsRight className="h-4 w-4" /> : <ChevronsLeft className="h-4 w-4" />}
+            </Button>
+          )}
         </div>
 
         <nav className="flex flex-1 flex-col gap-1 px-2 pb-6">
