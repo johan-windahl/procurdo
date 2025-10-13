@@ -6,6 +6,7 @@ import countries from "@/data/countries.json";
 import { Button } from "@/components/ui/button";
 import { cn, formatThousandsSpaces, normalizeNumericInput } from "@/lib/utils";
 import type { Filters } from "@/lib/search/types";
+import { normalizeFilters, noticeTypeOptions } from "@/lib/search/utils";
 
 type Props = {
   initial?: Partial<Filters>;
@@ -16,80 +17,11 @@ type Props = {
 type DateMode = "absolute" | "relative";
 type RelativePreset = "7" | "30" | "90" | "180" | "custom";
 
-const empty: Filters = {
-  cpvs: [],
-  text: "",
-  dateFrom: "",
-  deadlineTo: "",
-  country: "",
-  city: "",
-  status: "ongoing",
-  noticeType: "",
-  valueMin: "",
-  valueMax: "",
-};
-
 export function SearchForm({ onSearch, initial, actions }: Props) {
   type CountryOption = { code: string; name: string };
   const countryOptions = countries as CountryOption[];
 
-  const iso2ToIso3 = useMemo(
-    () =>
-      new Map<string, string>([
-        ["SE", "SWE"],
-        ["NO", "NOR"],
-        ["DK", "DNK"],
-        ["FI", "FIN"],
-        ["DE", "DEU"],
-      ]),
-    [],
-  );
-
-  const normalizeCountry = useCallback(
-    (value: string | undefined) => {
-      if (!value) return "";
-      const trimmed = value.trim();
-      if (!trimmed) return "";
-      const upper = trimmed.toUpperCase();
-      if (iso2ToIso3.has(upper)) {
-        return iso2ToIso3.get(upper)!;
-      }
-      const byCode = countryOptions.find((c) => c.code === upper);
-      if (byCode) return byCode.code;
-      const byName = countryOptions.find((c) => c.name.toLowerCase() === trimmed.toLowerCase());
-      if (byName) return byName.code;
-      return trimmed;
-    },
-    [countryOptions, iso2ToIso3],
-  );
-
-  const normalizeCpv = useCallback((code: string | undefined) => {
-    if (!code) return null;
-    const digits = code.replace(/\D/g, "");
-    if (!digits) return null;
-    if (digits.length >= 8) return digits.slice(0, 8);
-    return digits.padEnd(8, "0");
-  }, []);
-
-  const normalizeFilters = useCallback(
-    (incoming?: Partial<Filters>): Filters => {
-      const base: Filters = { ...empty, ...(incoming || {}) };
-      const normalizedCpvs = Array.isArray(incoming?.cpvs)
-        ? incoming.cpvs
-          .map((code) => normalizeCpv(code))
-          .filter((code): code is string => Boolean(code))
-        : base.cpvs;
-      const uniqueCpvs = Array.from(new Set(normalizedCpvs));
-      return {
-        ...base,
-        cpvs: uniqueCpvs,
-        country: normalizeCountry(incoming?.country ?? base.country),
-      };
-    },
-    [normalizeCountry, normalizeCpv],
-  );
-
-  const normalizedInitial = useMemo(() => normalizeFilters(initial), [initial, normalizeFilters]);
+  const normalizedInitial = useMemo(() => normalizeFilters(initial), [initial]);
 
   const [filters, setFilters] = useState<Filters>(normalizedInitial);
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -323,9 +255,11 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
               onChange={(e) => update({ noticeType: e.target.value })}
             >
               <option value="">Alla</option>
-              <option value="Contract Notice">Upphandlingsannons</option>
-              <option value="Prior Information Notice">Förhandsannons</option>
-              <option value="Award Notice">Tilldelningsannons</option>
+              {noticeTypeOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
             </select>
           </div>
           <div className="space-y-1">

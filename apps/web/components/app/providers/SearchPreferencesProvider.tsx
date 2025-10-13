@@ -9,6 +9,7 @@ import type {
   MonitorFrequency,
   MonitorRange,
 } from "@/lib/search/types";
+import { normalizeFilters } from "@/lib/search/utils";
 
 type SavedSearchInput = {
   name: string;
@@ -230,7 +231,12 @@ const initialMonitors: SearchMonitor[] = [
 ];
 
 export function SearchPreferencesProvider({ children }: { children: React.ReactNode }) {
-  const [savedSearches, setSavedSearches] = useState<SavedSearch[]>(initialSavedSearches);
+  const [savedSearches, setSavedSearches] = useState<SavedSearch[]>(
+    initialSavedSearches.map((item) => ({
+      ...item,
+      filters: normalizeFilters(item.filters),
+    })),
+  );
   const [monitors, setMonitors] = useState<SearchMonitor[]>(initialMonitors);
 
   const addSavedSearch = (input: SavedSearchInput): SavedSearch => {
@@ -239,7 +245,7 @@ export function SearchPreferencesProvider({ children }: { children: React.ReactN
       id: randomId(),
       name: input.name,
       description: input.description,
-      filters: input.filters,
+      filters: normalizeFilters(input.filters),
       createdAt: nowIso,
       lastRunAt: undefined,
     };
@@ -253,7 +259,7 @@ export function SearchPreferencesProvider({ children }: { children: React.ReactN
         item.id === id
           ? {
             ...item,
-            ...("filters" in update && update.filters ? { filters: update.filters } : {}),
+            ...("filters" in update && update.filters ? { filters: normalizeFilters(update.filters) } : {}),
             ...(update.name ? { name: update.name } : {}),
             ...(update.description !== undefined ? { description: update.description } : {}),
             lastRunAt: item.lastRunAt,
