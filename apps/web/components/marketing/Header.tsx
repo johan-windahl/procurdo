@@ -46,9 +46,9 @@ export function Header() {
             </Link>
           ))}
           {isSignedIn ? (
-            <UserButton afterSignOutUrl="/sv-se" />
+            <UserButton afterSignOutUrl="/sv-se" afterSignInUrl="/app/sv-se/dashboard" />
           ) : (
-            <SignInButton mode="modal">
+            <SignInButton mode="modal" forceRedirectUrl="/app/sv-se/dashboard">
               <Button size="md">Logga in</Button>
             </SignInButton>
           )}
@@ -82,12 +82,12 @@ export function Header() {
               </Link>
             ))}
             <div className="flex flex-col gap-2 pt-2">
-              <SignInButton mode="modal">
+              <SignInButton mode="modal" forceRedirectUrl="/app/sv-se/dashboard">
                 <Button size="lg" className="w-full" onClick={() => setOpen(false)}>
                   Logga in
                 </Button>
               </SignInButton>
-              <UserButton afterSignOutUrl="/sv-se" />
+              <UserButton afterSignOutUrl="/sv-se" afterSignInUrl="/app/sv-se/dashboard" />
             </div>
           </div>
         </div>

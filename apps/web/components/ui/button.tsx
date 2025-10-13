@@ -9,6 +9,7 @@ type Size = "sm" | "md" | "lg" | "icon";
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: Variant;
   size?: Size;
+  redirectUrl?: string; // Ignore this prop if passed from SignInButton
 };
 
 const baseStyles =
@@ -30,7 +31,7 @@ const sizeStyles: Record<Size, string> = {
 };
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "primary", size = "md", ...props }, ref) => {
+  ({ className, variant = "primary", size = "md", redirectUrl, ...props }, ref) => {
     return (
       <button
         ref={ref}
