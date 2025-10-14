@@ -3,8 +3,6 @@ import type { Filters } from "@/lib/search/types";
 import {
   normalizeFilters,
   resolveNoticeTypeCodes,
-  ongoingNoticeTypeCodes,
-  completedNoticeTypeCodes,
 } from "@/lib/search/utils";
 
 // Loosely typed helpers for the TED API payloads
@@ -137,8 +135,8 @@ const sanitizeTitle = (s: string): string => {
 const makeNoticeTypeClause = (codes: readonly string[]): string | null => {
   if (!codes || codes.length === 0) return null;
   if (codes.length === 1) return `notice-type = ${quote(codes[0]!)}`;
-  const clauses = codes.map((code) => `notice-type = ${quote(code)}`);
-  return `(${clauses.join(" OR ")})`;
+  const values = codes.map((code) => quote(code));
+  return `notice-type IN (${values.join(" ")})`;
 };
 
 const buildQuery = (f: Filters) => {
@@ -173,14 +171,6 @@ const buildQuery = (f: Filters) => {
   if (hasMax && Number.isFinite(max as number)) {
     parts.push(`estimated-value-lot <= ${max}`);
   }
-
-  if (f.status === "ongoing") {
-    const clause = makeNoticeTypeClause(ongoingNoticeTypeCodes);
-    if (clause) parts.push(clause);
-  } else if (f.status === "completed") {
-    const clause = makeNoticeTypeClause(completedNoticeTypeCodes);
-    if (clause) parts.push(clause);
-  }
   // We already add a default 1-year window above when no dateFrom is provided.
   return parts.join(" AND ");
 };
@@ -194,7 +184,7 @@ export async function POST(req: NextRequest) {
   try {
     filtersRaw = (await req.json()) as Filters;
   } catch {
-    filtersRaw = { cpvs: [], text: "", dateFrom: "", country: "", city: "", status: "ongoing" };
+    filtersRaw = { cpvs: [], text: "", dateFrom: "", country: "", city: "" };
   }
 
   const filters = normalizeFilters(filtersRaw);

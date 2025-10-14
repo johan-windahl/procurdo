@@ -16,11 +16,11 @@ type NoticeTypeGroupKey = "Contract Notice" | "Prior Information Notice" | "Awar
 const noticeTypeGroups: Record<NoticeTypeGroupKey, { label: string; codes: readonly string[] }> = {
   "Contract Notice": {
     label: "Upphandlingsannons",
-    codes: ["cn-standard", "cn-social", "subco", "cn-desg"],
+    codes: ["pin-cfc-standard", "pin-cfc-social", "qu-sy", "cn-standard", "cn-social", "subco", "cn-desg"],
   },
   "Prior Information Notice": {
     label: "Förhandsannons",
-    codes: ["pin-only", "pin-buyer", "pin-rtl", "pin-tran", "pin-cfc-standard", "pin-cfc-social", "qu-sy"],
+    codes: ["pin-only", "pin-buyer", "pin-rtl", "pin-tran"],
   },
   "Award Notice": {
     label: "Tilldelningsannons",
@@ -58,15 +58,6 @@ export const noticeTypeOptions = Object.entries(noticeTypeGroups).map(([value, c
   label: config.label,
 })) as Array<{ value: NoticeTypeGroupKey; label: string }>;
 
-export const ongoingNoticeTypeCodes = Array.from(
-  new Set([
-    ...noticeTypeGroups["Prior Information Notice"].codes,
-    ...noticeTypeGroups["Contract Notice"].codes,
-  ]),
-);
-
-export const completedNoticeTypeCodes = [...noticeTypeGroups["Award Notice"].codes];
-
 export const resolveNoticeTypeCodes = (value: string | undefined | null): string[] | null => {
   if (!value) return null;
   const trimmed = value.trim();
@@ -89,7 +80,6 @@ export const defaultFilters: Filters = {
   deadlineTo: "",
   country: "",
   city: "",
-  status: "ongoing",
   noticeType: "",
   valueMin: "",
   valueMax: "",
@@ -122,7 +112,6 @@ export const normalizeFilters = (incoming?: Partial<Filters>): Filters => {
     .map((code) => normalizeCpv(code))
     .filter((code): code is string => Boolean(code));
   const uniqueCpvs = Array.from(new Set(normalizedCpvs));
-  const status: Filters["status"] = base.status === "completed" ? "completed" : "ongoing";
   const noticeTypeInput = base.noticeType ?? "";
   const noticeType =
     noticeTypeInput && noticeTypeInput.trim()
@@ -132,17 +121,11 @@ export const normalizeFilters = (incoming?: Partial<Filters>): Filters => {
     ...base,
     cpvs: uniqueCpvs,
     country: normalizeCountry(base.country),
-    status,
     deadlineTo: base.deadlineTo ?? "",
     noticeType,
     valueMin: base.valueMin ?? "",
     valueMax: base.valueMax ?? "",
   };
-};
-
-const statusLabel: Record<Filters["status"], string> = {
-  ongoing: "Pågående",
-  completed: "Avslutade",
 };
 
 export const monitorRangeLabel: Record<MonitorRange, string> = {
@@ -173,7 +156,6 @@ export function filtersToSearchParams(filters: Filters): URLSearchParams {
   if (normalized.valueMax !== undefined && normalized.valueMax !== null && String(normalized.valueMax).trim() !== "") {
     params.set("max", String(normalized.valueMax));
   }
-  if (normalized.status && normalized.status !== "ongoing") params.set("status", normalized.status);
   return params;
 }
 
@@ -196,7 +178,6 @@ export function filtersFromSearchParams(params: URLSearchParams): Filters {
     noticeType: params.get("type") || "",
     valueMin: params.get("min") || "",
     valueMax: params.get("max") || "",
-    status: (params.get("status") as Filters["status"]) || "ongoing",
   });
 }
 
@@ -218,6 +199,5 @@ export function summarizeFilters(filters: Filters): Array<{ label: string; value
   }
   if (normalized.valueMin) summary.push({ label: "Minvärde", value: `${normalized.valueMin} SEK` });
   if (normalized.valueMax) summary.push({ label: "Maxvärde", value: `${normalized.valueMax} SEK` });
-  summary.push({ label: "Status", value: statusLabel[normalized.status] });
   return summary;
 }

@@ -15,7 +15,7 @@ type Props = {
 };
 
 type DateMode = "absolute" | "relative";
-type RelativePreset = "7" | "30" | "90" | "180" | "custom";
+type RelativePreset = "1" | "7" | "30" | "90" | "180" | "custom";
 
 export function SearchForm({ onSearch, initial, actions }: Props) {
   type CountryOption = { code: string; name: string };
@@ -42,10 +42,10 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
       if (daysAgo && daysAgo > 0) {
         setDateMode("relative");
         // Set appropriate preset based on the number of days
-        if (daysAgo === 7) setRelativePreset("7");
+        if (daysAgo === 1) setRelativePreset("1");
+        else if (daysAgo === 7) setRelativePreset("7");
         else if (daysAgo === 30) setRelativePreset("30");
         else if (daysAgo === 90) setRelativePreset("90");
-        else if (daysAgo === 180) setRelativePreset("180");
         else {
           setRelativePreset("custom");
           setCustomRelativeDays(daysAgo);
@@ -198,10 +198,10 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
                         value={relativePreset}
                         onChange={(e) => setRelativePreset(e.target.value as RelativePreset)}
                       >
+                        <option value="1">Senaste 1 dag</option>
                         <option value="7">Senaste 7 dagarna</option>
                         <option value="30">Senaste 30 dagarna</option>
                         <option value="90">Senaste 90 dagarna</option>
-                        <option value="180">Senaste 180 dagarna</option>
                         <option value="custom">Anpassat antal dagar</option>
                       </select>
                     </label>
