@@ -13,6 +13,7 @@ import {
   monitorRangeLabel,
   summarizeFilters,
 } from "@/lib/search/utils";
+import { Play, Edit, Trash2, Eye, Pause, Play as PlayIcon, Search } from "lucide-react";
 
 const dateFormatter = new Intl.DateTimeFormat("sv-SE", { dateStyle: "medium", timeStyle: "short" });
 
@@ -144,8 +145,8 @@ export function BevakningarClient() {
               <tr>
                 <th className="px-4 py-3">Namn</th>
                 <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Frekvens</th>
-                <th className="px-4 py-3">Senaste körning</th>
+                <th className="hidden md:table-cell px-4 py-3">Frekvens</th>
+                <th className="hidden md:table-cell px-4 py-3">Senaste körning</th>
                 <th className="px-4 py-3 text-right">Åtgärder</th>
               </tr>
             </thead>
@@ -284,23 +285,22 @@ export function BevakningarClient() {
                       <p className="text-xs text-muted-foreground">{rangeText}</p>
                       <p className="text-xs text-muted-foreground">Baserad på: {baseSearch?.name ?? "Sökning borttagen"}</p>
                     </td>
-                    <td className="px-4 py-3 align-top">
-                      <span
-                        className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${monitor.status === "active" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+                    <td className="px-4 py-3 align-center w-16">
+                      <div
+                        className={`h-5 w-5 rounded-full ${monitor.status === "active" ? "bg-emerald-500" : "bg-amber-500"
                           }`}
-                      >
-                        {monitor.status === "active" ? "Aktiv" : "Pausad"}
-                      </span>
+                      />
                     </td>
-                    <td className="px-4 py-3 align-top text-muted-foreground">
+                    <td className="hidden md:table-cell px-4 py-3 align-top text-muted-foreground">
                       {monitorFrequencyLabel[monitor.frequency]} kl. {monitor.timeOfDay}
                     </td>
-                    <td className="px-4 py-3 align-top text-muted-foreground">{formatDateTime(monitor.lastRunAt)}</td>
+                    <td className="hidden md:table-cell px-4 py-3 align-top text-muted-foreground">{formatDateTime(monitor.lastRunAt)}</td>
                     <td className="px-4 py-3 align-top">
-                      <div className="flex justify-end gap-2">
+                      <div className="grid grid-cols-2 gap-2 md:flex md:justify-end">
                         {baseSearch ? (
-                          <Button variant="outline" size="sm" type="button" onClick={() => handleRun(baseSearch.id)}>
-                            Öppna sökning
+                          <Button variant="ghost" size="sm" type="button" onClick={() => handleRun(baseSearch.id)}>
+                            <Search className="md:hidden" />
+                            <span className="hidden md:inline">Öppna sökning</span>
                           </Button>
                         ) : null}
                         <Button
@@ -309,7 +309,8 @@ export function BevakningarClient() {
                           type="button"
                           onClick={() => setExpandedId((prev) => (prev === monitor.id ? null : monitor.id))}
                         >
-                          {isExpanded ? "Dölj resultat" : "Visa senaste resultat"}
+                          <Eye className="md:hidden" />
+                          <span className="hidden md:inline">{isExpanded ? "Dölj resultat" : "Visa senaste resultat"}</span>
                         </Button>
                         <Button
                           variant="ghost"
@@ -317,15 +318,27 @@ export function BevakningarClient() {
                           type="button"
                           onClick={() => (isEditing ? closeEdit() : openEdit(monitor.id))}
                         >
-                          Redigera
+                          <Edit className="md:hidden" />
+                          <span className="hidden md:inline">Redigera</span>
                         </Button>
                         <Button
+                          className="md:w-20"
                           variant="ghost"
                           size="sm"
                           type="button"
                           onClick={() => handleToggle(monitor.id)}
                         >
-                          {monitor.status === "active" ? "Pausa" : "Återuppta"}
+                          {monitor.status === "active" ? (
+                            <>
+                              <Pause className="h-20 w-20 md:hidden" />
+                              <span className="hidden md:inline">Pausa</span>
+                            </>
+                          ) : (
+                            <>
+                              <PlayIcon className="h-20 w-20 md:hidden" />
+                              <span className="hidden md:inline">Återuppta</span>
+                            </>
+                          )}
                         </Button>
                         <Button
                           variant="ghost"
@@ -334,7 +347,8 @@ export function BevakningarClient() {
                           className="text-destructive hover:text-destructive"
                           onClick={() => handleDelete(monitor.id)}
                         >
-                          Ta bort
+                          <Trash2 className="md:hidden" />
+                          <span className="hidden md:inline">Ta bort</span>
                         </Button>
                       </div>
                     </td>
