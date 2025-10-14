@@ -10,6 +10,7 @@ import { useSearchPreferences } from "@/components/app/providers/SearchPreferenc
 import { useToast } from "@/components/ui/toast";
 import { filtersToQueryString, summarizeFilters } from "@/lib/search/utils";
 import type { Filters } from "@/lib/search/types";
+import { Play, Edit, Trash2 } from "lucide-react";
 
 const dateFormatter = new Intl.DateTimeFormat("sv-SE", { dateStyle: "medium" });
 
@@ -119,8 +120,8 @@ export function SavedSearchesClient() {
             <thead className="bg-muted/60 text-left text-sm font-medium text-muted-foreground">
               <tr>
                 <th className="px-4 py-3">Namn</th>
-                <th className="px-4 py-3">Skapad</th>
-                <th className="px-4 py-3">Filter</th>
+                <th className="hidden md:table-cell px-4 py-3">Skapad</th>
+                <th className="hidden md:table-cell px-4 py-3">Filter</th>
                 <th className="px-4 py-3 text-right">Åtgärder</th>
               </tr>
             </thead>
@@ -134,7 +135,7 @@ export function SavedSearchesClient() {
                 if (isEditing) {
                   return (
                     <tr key={search.id}>
-                      <td colSpan={4} className="px-4 py-6">
+                      <td className="col-span-2 md:col-span-4 px-4 py-6">
                         <div className="space-y-6">
                           <div className="space-y-4">
                             <div className="space-y-2">
@@ -193,8 +194,8 @@ export function SavedSearchesClient() {
                         <p className="text-xs text-muted-foreground">{search.description}</p>
                       ) : null}
                     </td>
-                    <td className="px-4 py-3 align-top text-muted-foreground">{formatDate(search.createdAt)}</td>
-                    <td className="px-4 py-3 align-top">
+                    <td className="hidden md:table-cell px-4 py-3 align-top text-muted-foreground">{formatDate(search.createdAt)}</td>
+                    <td className="hidden md:table-cell px-4 py-3 align-top">
                       <div className="flex flex-wrap gap-2">
                         {visible.map((item) => (
                           <span key={`${search.id}-${item.label}`} className="rounded-full bg-accent/40 px-3 py-1 text-xs text-muted-foreground">
@@ -209,10 +210,12 @@ export function SavedSearchesClient() {
                     <td className="px-4 py-3 align-top">
                       <div className="flex justify-end gap-2">
                         <Button variant="ghost" size="sm" type="button" onClick={() => handleRun(search.id)}>
-                          Kör
+                          <Play className="h-4 w-4 md:hidden" />
+                          <span className="hidden md:inline">Kör</span>
                         </Button>
                         <Button variant="ghost" size="sm" type="button" onClick={() => startEdit(search.id)}>
-                          Redigera
+                          <Edit className="h-4 w-4 md:hidden" />
+                          <span className="hidden md:inline">Redigera</span>
                         </Button>
                         <Button
                           variant="ghost"
@@ -221,7 +224,8 @@ export function SavedSearchesClient() {
                           className="text-destructive hover:text-destructive"
                           onClick={() => handleDelete(search.id)}
                         >
-                          Ta bort
+                          <Trash2 className="h-4 w-4 md:hidden" />
+                          <span className="hidden md:inline">Ta bort</span>
                         </Button>
                       </div>
                     </td>
