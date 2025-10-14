@@ -50,7 +50,7 @@ export function Header() {
             </Link>
           ))}
           {isSignedIn ? (
-            <UserButton afterSignOutUrl="/" afterSignInUrl="/app/dashboard" />
+            <UserButton />
           ) : (
             <SignInButton mode="modal" forceRedirectUrl="/app/dashboard">
               <Button size="md">Logga in</Button>
@@ -91,7 +91,7 @@ export function Header() {
                   Logga in
                 </Button>
               </SignInButton>
-              <UserButton afterSignOutUrl="/" afterSignInUrl="/app/dashboard" />
+              <UserButton/>
             </div> */}
           </div>
         </div>
