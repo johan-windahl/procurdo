@@ -177,11 +177,10 @@ export function BevakningarClient() {
                     <td className="px-4 py-3 align-top text-muted-foreground">{formatDateTime(monitor.lastRunAt)}</td>
                     <td className="px-4 py-3 align-top">
                       <span
-                        className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${
-                          monitor.status === "active"
-                            ? "bg-emerald-100 text-emerald-700"
-                            : "bg-amber-100 text-amber-700"
-                        }`}
+                        className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${monitor.status === "active"
+                          ? "bg-emerald-100 text-emerald-700"
+                          : "bg-amber-100 text-amber-700"
+                          }`}
                       >
                         {monitor.status === "active" ? "Aktiv" : "Pausad"}
                       </span>
@@ -195,6 +194,7 @@ export function BevakningarClient() {
                           Redigera
                         </Button>
                         <Button
+                          className="w-20 justify-center"
                           variant="ghost"
                           size="sm"
                           type="button"

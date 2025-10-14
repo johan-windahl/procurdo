@@ -49,13 +49,13 @@ export function Header() {
               {item.label}
             </Link>
           ))}
-          {/* {isSignedIn ? (
+          {isSignedIn ? (
             <UserButton />
           ) : (
             <SignInButton mode="modal" forceRedirectUrl="/app/dashboard">
               <Button size="md">Logga in</Button>
             </SignInButton>
-          )} */}
+          )}
         </nav>
 
         {/* Mobile hamburger */}
