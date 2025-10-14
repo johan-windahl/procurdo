@@ -6,6 +6,7 @@ import countries from "@/data/countries.json";
 import { Button } from "@/components/ui/button";
 import { cn, formatThousandsSpaces, normalizeNumericInput } from "@/lib/utils";
 import type { Filters } from "@/lib/search/types";
+import { normalizeFilters, noticeTypeOptions } from "@/lib/search/utils";
 
 type Props = {
   initial?: Partial<Filters>;
@@ -14,82 +15,13 @@ type Props = {
 };
 
 type DateMode = "absolute" | "relative";
-type RelativePreset = "7" | "30" | "90" | "180" | "custom";
-
-const empty: Filters = {
-  cpvs: [],
-  text: "",
-  dateFrom: "",
-  deadlineTo: "",
-  country: "",
-  city: "",
-  status: "ongoing",
-  noticeType: "",
-  valueMin: "",
-  valueMax: "",
-};
+type RelativePreset = "1" | "7" | "30" | "90" | "180" | "custom";
 
 export function SearchForm({ onSearch, initial, actions }: Props) {
   type CountryOption = { code: string; name: string };
   const countryOptions = countries as CountryOption[];
 
-  const iso2ToIso3 = useMemo(
-    () =>
-      new Map<string, string>([
-        ["SE", "SWE"],
-        ["NO", "NOR"],
-        ["DK", "DNK"],
-        ["FI", "FIN"],
-        ["DE", "DEU"],
-      ]),
-    [],
-  );
-
-  const normalizeCountry = useCallback(
-    (value: string | undefined) => {
-      if (!value) return "";
-      const trimmed = value.trim();
-      if (!trimmed) return "";
-      const upper = trimmed.toUpperCase();
-      if (iso2ToIso3.has(upper)) {
-        return iso2ToIso3.get(upper)!;
-      }
-      const byCode = countryOptions.find((c) => c.code === upper);
-      if (byCode) return byCode.code;
-      const byName = countryOptions.find((c) => c.name.toLowerCase() === trimmed.toLowerCase());
-      if (byName) return byName.code;
-      return trimmed;
-    },
-    [countryOptions, iso2ToIso3],
-  );
-
-  const normalizeCpv = useCallback((code: string | undefined) => {
-    if (!code) return null;
-    const digits = code.replace(/\D/g, "");
-    if (!digits) return null;
-    if (digits.length >= 8) return digits.slice(0, 8);
-    return digits.padEnd(8, "0");
-  }, []);
-
-  const normalizeFilters = useCallback(
-    (incoming?: Partial<Filters>): Filters => {
-      const base: Filters = { ...empty, ...(incoming || {}) };
-      const normalizedCpvs = Array.isArray(incoming?.cpvs)
-        ? incoming.cpvs
-            .map((code) => normalizeCpv(code))
-            .filter((code): code is string => Boolean(code))
-        : base.cpvs;
-      const uniqueCpvs = Array.from(new Set(normalizedCpvs));
-      return {
-        ...base,
-        cpvs: uniqueCpvs,
-        country: normalizeCountry(incoming?.country ?? base.country),
-      };
-    },
-    [normalizeCountry, normalizeCpv],
-  );
-
-  const normalizedInitial = useMemo(() => normalizeFilters(initial), [initial, normalizeFilters]);
+  const normalizedInitial = useMemo(() => normalizeFilters(initial), [initial]);
 
   const [filters, setFilters] = useState<Filters>(normalizedInitial);
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -110,10 +42,10 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
       if (daysAgo && daysAgo > 0) {
         setDateMode("relative");
         // Set appropriate preset based on the number of days
-        if (daysAgo === 7) setRelativePreset("7");
+        if (daysAgo === 1) setRelativePreset("1");
+        else if (daysAgo === 7) setRelativePreset("7");
         else if (daysAgo === 30) setRelativePreset("30");
         else if (daysAgo === 90) setRelativePreset("90");
-        else if (daysAgo === 180) setRelativePreset("180");
         else {
           setRelativePreset("custom");
           setCustomRelativeDays(daysAgo);
@@ -123,17 +55,8 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
       }
     }
 
-    // Show advanced filters if any advanced options are set
-    if (
-      (normalizedInitial.cpvs && normalizedInitial.cpvs.length > 0) ||
-      normalizedInitial.deadlineTo ||
-      normalizedInitial.city ||
-      normalizedInitial.noticeType ||
-      normalizedInitial.valueMin ||
-      normalizedInitial.valueMax
-    ) {
-      setShowAdvanced(true);
-    }
+    // Don't auto-expand advanced search when loading saved searches
+    // Users can manually toggle it if they want to see/edit advanced filters
   }, [normalizedInitial]);
 
   const calculateDaysFromNow = (dateString: string): number | null => {
@@ -179,6 +102,7 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
+    setShowAdvanced(false);
     onSearch(filters);
   };
 
@@ -219,15 +143,16 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
         >
           {showAdvanced ? "Dölj avancerade filter" : "Visa avancerade filter"}
         </button>
-        <Button type="submit" size="lg">
-          Sök
-        </Button>
       </div>
 
-      {actions ? <div className="mt-2 flex flex-wrap gap-3">{actions}</div> : null}
-
       <div
-        className={cn("space-y-5", showAdvanced ? "block" : "hidden")}
+        className={cn(
+          "space-y-5",
+          showAdvanced ? "block" : "hidden"
+        )}
+        style={{
+          display: showAdvanced ? 'block' : 'none'
+        }}
         aria-hidden={!showAdvanced}
       >
         <div className="space-y-2">
@@ -273,10 +198,10 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
                         value={relativePreset}
                         onChange={(e) => setRelativePreset(e.target.value as RelativePreset)}
                       >
+                        <option value="1">Senaste 1 dag</option>
                         <option value="7">Senaste 7 dagarna</option>
                         <option value="30">Senaste 30 dagarna</option>
                         <option value="90">Senaste 90 dagarna</option>
-                        <option value="180">Senaste 180 dagarna</option>
                         <option value="custom">Anpassat antal dagar</option>
                       </select>
                     </label>
@@ -330,9 +255,11 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
               onChange={(e) => update({ noticeType: e.target.value })}
             >
               <option value="">Alla</option>
-              <option value="Contract Notice">Upphandlingsannons</option>
-              <option value="Prior Information Notice">Förhandsannons</option>
-              <option value="Award Notice">Tilldelningsannons</option>
+              {noticeTypeOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
             </select>
           </div>
           <div className="space-y-1">
@@ -360,6 +287,13 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
             />
           </div>
         </div>
+      </div>
+
+      <div className="flex justify-between items-center mt-6">
+        {actions ? <div className="flex flex-wrap gap-3">{actions}</div> : <div></div>}
+        <Button type="submit" size="lg" className="px-8">
+          Sök
+        </Button>
       </div>
     </form>
   );

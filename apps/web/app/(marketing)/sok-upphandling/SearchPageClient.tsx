@@ -15,7 +15,6 @@ const defaultFilters: Filters = {
   deadlineTo: "",
   country: "",
   city: "",
-  status: "ongoing",
   noticeType: "",
   valueMin: "",
   valueMax: "",
@@ -48,7 +47,6 @@ export default function SearchPageClient() {
       noticeType: searchParams.get("type") || "",
       valueMin: searchParams.get("min") || "",
       valueMax: searchParams.get("max") || "",
-      status: (searchParams.get("status") as Filters["status"]) || "ongoing",
     };
   }, [searchParams]);
 

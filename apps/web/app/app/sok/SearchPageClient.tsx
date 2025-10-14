@@ -12,21 +12,15 @@ import Spinner from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { useSearchPreferences } from "@/components/app/providers/SearchPreferencesProvider";
 import type { Filters, MonitorRange, Notice } from "@/lib/search/types";
-import { summarizeFilters, filtersToSearchParams, monitorFrequencyLabel } from "@/lib/search/utils";
+import {
+  summarizeFilters,
+  filtersToSearchParams,
+  monitorFrequencyLabel,
+  defaultFilters,
+  filtersFromSearchParams,
+  normalizeFilters,
+} from "@/lib/search/utils";
 import { useToast } from "@/components/ui/toast";
-
-const defaultFilters: Filters = {
-  cpvs: [],
-  text: "",
-  dateFrom: "",
-  deadlineTo: "",
-  country: "",
-  city: "",
-  status: "ongoing",
-  noticeType: "",
-  valueMin: "",
-  valueMax: "",
-};
 
 type SaveFormState = {
   name: string;
@@ -47,7 +41,7 @@ export function SearchPageClient() {
   const { push } = useToast();
   const { savedSearches, addSavedSearch, addMonitor } = useSearchPreferences();
 
-  const [filters, setFilters] = useState<Filters>(defaultFilters);
+  const [filters, setFilters] = useState<Filters>(() => ({ ...defaultFilters }));
   const [results, setResults] = useState<Notice[]>([]);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
@@ -74,28 +68,17 @@ export function SearchPageClient() {
     }
   }, [savedSearches, monitorForm.savedSearchId]);
 
-  const initialFromParams = useMemo<Partial<Filters>>(() => {
-    if (!searchParams) return {};
-    const cpvParam = searchParams.get("cpv");
-    const cpvs = cpvParam ? cpvParam.split(",").filter(Boolean) : [];
-    return {
-      cpvs,
-      text: searchParams.get("q") || "",
-      dateFrom: searchParams.get("from") || "",
-      deadlineTo: searchParams.get("to") || "",
-      country: searchParams.get("country") || "",
-      city: searchParams.get("city") || "",
-      noticeType: searchParams.get("type") || "",
-      valueMin: searchParams.get("min") || "",
-      valueMax: searchParams.get("max") || "",
-      status: (searchParams.get("status") as Filters["status"]) || "ongoing",
-    };
+  const initialFromParams = useMemo<Filters | null>(() => {
+    if (!searchParams) return null;
+    return filtersFromSearchParams(searchParams);
   }, [searchParams]);
 
   useEffect(() => {
-    setFilters((prev) => ({ ...prev, ...initialFromParams }));
     const p = Number(searchParams?.get("page") || "1") || 1;
     setPage(p);
+    if (initialFromParams) {
+      setFilters(initialFromParams);
+    }
   }, [initialFromParams, searchParams]);
 
   const updateUrl = useCallback(
@@ -110,15 +93,17 @@ export function SearchPageClient() {
 
   const runSearch = useCallback(
     async (f: Filters, p = 1) => {
+      const normalized = normalizeFilters(f);
       setHasSearched(true);
       setLoading(true);
       setError(null);
       setPage(p);
-      updateUrl(f, p);
+      setFilters(normalized);
+      updateUrl(normalized, p);
       const res = await fetch(`/api/search?page=${p}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(f),
+        body: JSON.stringify(normalized),
       });
       try {
         const data = await res.json();
@@ -143,17 +128,15 @@ export function SearchPageClient() {
   );
 
   useEffect(() => {
-    if (!searchParams) return;
+    if (!searchParams || !initialFromParams) return;
     const hasQueryParams = searchParams.toString().length > 0;
     if (hasQueryParams) {
       const p = Number(searchParams.get("page") || "1") || 1;
-      runSearch({ ...filters, ...initialFromParams }, p);
+      runSearch(initialFromParams, p);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, [searchParams, initialFromParams, runSearch]);
 
   const onSubmit = (f: Filters) => {
-    setFilters(f);
     runSearch(f, 1);
   };
 
@@ -212,7 +195,7 @@ export function SearchPageClient() {
 
         <SearchForm
           onSearch={onSubmit}
-          initial={initialFromParams}
+          initial={initialFromParams ?? undefined}
           actions={
             <>
               <Button variant="outline" type="button" onClick={() => setSaveModalOpen(true)}>

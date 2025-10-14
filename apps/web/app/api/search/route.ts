@@ -1,5 +1,9 @@
 import { NextRequest } from "next/server";
 import type { Filters } from "@/lib/search/types";
+import {
+  normalizeFilters,
+  resolveNoticeTypeCodes,
+} from "@/lib/search/utils";
 
 // Loosely typed helpers for the TED API payloads
 type LangObject = Record<string, unknown>;
@@ -128,10 +132,17 @@ const sanitizeTitle = (s: string): string => {
   return last || trimmed;
 };
 
+const makeNoticeTypeClause = (codes: readonly string[]): string | null => {
+  if (!codes || codes.length === 0) return null;
+  if (codes.length === 1) return `notice-type = ${quote(codes[0]!)}`;
+  const values = codes.map((code) => quote(code));
+  return `notice-type IN (${values.join(" ")})`;
+};
+
 const buildQuery = (f: Filters) => {
   const parts: string[] = [];
   if (Array.isArray(f.cpvs) && f.cpvs.length > 0) {
-    const cpv = f.cpvs.map((c) => `classification-cpv = ${c}`).join(" OR ");
+    const cpv = f.cpvs.map((c) => `classification-cpv = ${quote(c)}`).join(" OR ");
     parts.push(`(${cpv})`);
   }
   if (f.text) parts.push(`FT ~ (${quote(f.text)})`);
@@ -143,7 +154,13 @@ const buildQuery = (f: Filters) => {
     parts.push(`buyer-country = ${quote(f.country)}`);
   }
   if (f.city) parts.push(`buyer-city ~ (${quote(f.city)})`);
-  if (f.noticeType) parts.push(`notice-type = ${quote(f.noticeType)}`);
+  const noticeTypeCodes = resolveNoticeTypeCodes(f.noticeType);
+  if (noticeTypeCodes?.length) {
+    const clause = makeNoticeTypeClause(noticeTypeCodes);
+    if (clause) parts.push(clause);
+  } else if (f.noticeType) {
+    parts.push(`notice-type = ${quote(f.noticeType)}`);
+  }
   const hasMin = f.valueMin !== undefined && f.valueMin !== null && String(f.valueMin).trim() !== "";
   const hasMax = f.valueMax !== undefined && f.valueMax !== null && String(f.valueMax).trim() !== "";
   const min = hasMin ? Number(f.valueMin) : undefined;
@@ -154,14 +171,6 @@ const buildQuery = (f: Filters) => {
   if (hasMax && Number.isFinite(max as number)) {
     parts.push(`estimated-value-lot <= ${max}`);
   }
-
-  if (f.status === "ongoing") {
-    parts.push(
-      `(notice-type IN (pin-only pin-buyer pin-rtl pin-tran pin-cfc-standard pin-cfc-social qu-sy cn-standard cn-social subco cn-desg))`
-    );
-  } else if (f.status === "completed") {
-    parts.push(`(notice-type IN (can-standard can-social can-desg can-tran))`);
-  }
   // We already add a default 1-year window above when no dateFrom is provided.
   return parts.join(" AND ");
 };
@@ -171,13 +180,14 @@ export async function POST(req: NextRequest) {
   const page = Math.max(1, Number(searchParams.get("page") || "1"));
   const limit = 20;
 
-  let filters: Filters;
+  let filtersRaw: Filters;
   try {
-    filters = (await req.json()) as Filters;
+    filtersRaw = (await req.json()) as Filters;
   } catch {
-    filters = { cpvs: [], text: "", dateFrom: "", country: "", city: "", status: "ongoing" };
+    filtersRaw = { cpvs: [], text: "", dateFrom: "", country: "", city: "" };
   }
 
+  const filters = normalizeFilters(filtersRaw);
   const query = buildQuery(filters);
   const payload = {
     query,
@@ -216,6 +226,13 @@ export async function POST(req: NextRequest) {
     const json: TEDSearchResponse = await res.json();
     if (!res.ok || json?.error) {
       const err: TEDError = json?.error || {};
+      console.error("TED search error", {
+        status: res.status,
+        query,
+        filters,
+        payload,
+        response: json,
+      });
       return new Response(
         JSON.stringify({
           items: [],
@@ -292,7 +309,7 @@ export async function POST(req: NextRequest) {
       headers: { "Content-Type": "application/json" },
     });
   } catch (e) {
-    console.error(e);
+    console.error("TED search request failed", { error: e, query, filters, payload });
     return new Response(JSON.stringify({ items: [], total: 0 }), {
       status: 500,
       headers: { "Content-Type": "application/json" },

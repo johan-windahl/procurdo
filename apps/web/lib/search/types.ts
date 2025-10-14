@@ -5,7 +5,6 @@ export type Filters = {
   deadlineTo?: string;
   country: string;
   city: string;
-  status: "ongoing" | "completed";
   noticeType?: string;
   valueMin?: number | string;
   valueMax?: number | string;

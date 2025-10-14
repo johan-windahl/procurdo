@@ -105,7 +105,7 @@ export const config = {
 After deployment, check:
 
 1. ✅ Build completes without Edge Runtime errors
-2. ✅ Marketing pages load correctly (`/sv-se`)
+2. ✅ Marketing pages load correctly (`/`)
 3. ✅ Protected routes redirect to sign-in (`/app`)
 4. ✅ API routes work correctly (`/api/search`)
 
