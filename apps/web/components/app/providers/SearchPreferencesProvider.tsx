@@ -7,7 +7,6 @@ import type {
   SavedSearch,
   SearchMonitor,
   MonitorFrequency,
-  MonitorRange,
 } from "@/lib/search/types";
 import { normalizeFilters } from "@/lib/search/utils";
 
@@ -25,9 +24,6 @@ type MonitorInput = {
   name: string;
   savedSearchId: string;
   frequency: MonitorFrequency;
-  timeOfDay: string;
-  relativeRange: MonitorRange;
-  customRangeDays?: number;
 };
 
 type MonitorUpdate = Partial<Omit<MonitorInput, "savedSearchId">> & {
@@ -206,8 +202,6 @@ const initialMonitors: SearchMonitor[] = [
     name: "Daglig IT-bevakning",
     savedSearchId: "ss-1",
     frequency: "daily",
-    timeOfDay: "08:00",
-    relativeRange: "24h",
     createdAt: "2024-07-12T09:00:00.000Z",
     lastRunAt: "2024-09-18T08:00:00.000Z",
     status: "active",
@@ -218,8 +212,6 @@ const initialMonitors: SearchMonitor[] = [
     name: "Veckovis bygguppföljning",
     savedSearchId: "ss-2",
     frequency: "weekly",
-    timeOfDay: "07:30",
-    relativeRange: "7d",
     createdAt: "2024-06-05T11:20:00.000Z",
     lastRunAt: "2024-09-16T07:30:00.000Z",
     status: "paused",
@@ -278,9 +270,6 @@ export function SearchPreferencesProvider({ children }: { children: React.ReactN
       name: input.name,
       savedSearchId: input.savedSearchId,
       frequency: input.frequency,
-      timeOfDay: input.timeOfDay,
-      relativeRange: input.relativeRange,
-      customRangeDays: input.customRangeDays,
       createdAt: nowIso,
       lastRunAt: undefined,
       status: "active",
@@ -299,9 +288,6 @@ export function SearchPreferencesProvider({ children }: { children: React.ReactN
             ...(update.name ? { name: update.name } : {}),
             ...(update.savedSearchId ? { savedSearchId: update.savedSearchId } : {}),
             ...(update.frequency ? { frequency: update.frequency } : {}),
-            ...(update.timeOfDay ? { timeOfDay: update.timeOfDay } : {}),
-            ...(update.relativeRange ? { relativeRange: update.relativeRange } : {}),
-            ...(update.customRangeDays !== undefined ? { customRangeDays: update.customRangeDays } : {}),
             ...(update.lastRunAt ? { lastRunAt: update.lastRunAt } : {}),
             ...(update.status ? { status: update.status } : {}),
           }

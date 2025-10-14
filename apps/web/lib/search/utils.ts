@@ -1,5 +1,5 @@
 import countries from "@/data/countries.json";
-import type { Filters, MonitorRange } from "@/lib/search/types";
+import type { Filters } from "@/lib/search/types";
 
 const countryLookup = new Map<string, string>(countries.map((c) => [c.code, c.name]));
 const countryNameLookup = new Map<string, string>(countries.map((c) => [c.name.toLowerCase(), c.code]));
@@ -128,12 +128,6 @@ export const normalizeFilters = (incoming?: Partial<Filters>): Filters => {
   };
 };
 
-export const monitorRangeLabel: Record<MonitorRange, string> = {
-  "24h": "Senaste 24 timmarna",
-  "7d": "Senaste 7 dagarna",
-  "30d": "Senaste 30 dagarna",
-  custom: "Anpassat intervall",
-};
 
 export const monitorFrequencyLabel = {
   daily: "Dagligen",

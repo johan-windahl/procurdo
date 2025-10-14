@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { Modal } from "@/components/ui/modal";
 import { useSearchPreferences } from "@/components/app/providers/SearchPreferencesProvider";
 import { useToast } from "@/components/ui/toast";
 import {
   filtersToQueryString,
   monitorFrequencyLabel,
-  monitorRangeLabel,
   summarizeFilters,
 } from "@/lib/search/utils";
 import { Play, Edit, Trash2, Eye, Pause, Play as PlayIcon, Search } from "lucide-react";
@@ -27,7 +27,7 @@ const formatDateTime = (iso?: string) => {
 export function BevakningarClient() {
   const router = useRouter();
   const { push } = useToast();
-  const { monitors, savedSearches, updateMonitor, deleteMonitor, toggleMonitorStatus } = useSearchPreferences();
+  const { monitors, savedSearches, addMonitor, updateMonitor, deleteMonitor, toggleMonitorStatus } = useSearchPreferences();
 
   const sortedMonitors = useMemo(
     () => [...monitors].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
@@ -41,13 +41,22 @@ export function BevakningarClient() {
 
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editForm, setEditForm] = useState({
     savedSearchId: "",
     frequency: "daily" as "daily" | "weekly",
-    timeOfDay: "08:00",
-    relativeRange: "24h" as "24h" | "7d" | "30d" | "custom",
-    customRangeDays: 7,
   });
+
+  const [monitorForm, setMonitorForm] = useState({
+    savedSearchId: savedSearches[0]?.id ?? "",
+    frequency: "daily" as "daily" | "weekly",
+  });
+
+  useEffect(() => {
+    if (!monitorForm.savedSearchId && savedSearches.length > 0) {
+      setMonitorForm((prev) => ({ ...prev, savedSearchId: savedSearches[0]!.id }));
+    }
+  }, [savedSearches, monitorForm.savedSearchId]);
 
   useEffect(() => {
     setPage(1);
@@ -63,9 +72,6 @@ export function BevakningarClient() {
     setEditForm({
       savedSearchId: monitor.savedSearchId,
       frequency: monitor.frequency,
-      timeOfDay: monitor.timeOfDay,
-      relativeRange: monitor.relativeRange,
-      customRangeDays: monitor.customRangeDays ?? 7,
     });
     setEditingId(id);
   };
@@ -83,9 +89,6 @@ export function BevakningarClient() {
     updateMonitor(editingId, {
       savedSearchId: editForm.savedSearchId,
       frequency: editForm.frequency,
-      timeOfDay: editForm.timeOfDay,
-      relativeRange: editForm.relativeRange,
-      customRangeDays: editForm.relativeRange === "custom" ? Math.max(1, Number(editForm.customRangeDays) || 1) : undefined,
       name: derivedName,
     });
     setEditingId(null);
@@ -115,28 +118,49 @@ export function BevakningarClient() {
     router.push(`/app/sok${query}`);
   };
 
+  const handleCreateMonitor = () => {
+    if (!monitorForm.savedSearchId) {
+      push({ title: "Välj sparad sökning", description: "Du behöver välja en sparad sökning", variant: "warning" });
+      return;
+    }
+    const selectedSavedSearch = savedSearches.find((s) => s.id === monitorForm.savedSearchId);
+    const monitor = addMonitor({
+      name: `${selectedSavedSearch?.name || "Bevakning"} (${monitorFrequencyLabel[monitorForm.frequency]})`,
+      savedSearchId: monitorForm.savedSearchId,
+      frequency: monitorForm.frequency,
+    });
+    setCreateModalOpen(false);
+    setMonitorForm((prev) => ({ ...prev, savedSearchId: monitor.savedSearchId }));
+    push({ title: "Bevakning skapad" });
+  };
+
+  const selectedSavedSearch = savedSearches.find((s) => s.id === monitorForm.savedSearchId);
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold">Bevakningar</h1>
-        <p className="text-sm text-muted-foreground">
-          Överblicka dina bevakningar, pausa tillfälligt eller uppdatera intervall och underliggande sökning.
-        </p>
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-2">
+            <h1 className="text-2xl font-semibold">Bevakningar</h1>
+            <p className="text-sm text-muted-foreground">
+              Överblicka dina bevakningar, pausa tillfälligt eller uppdatera intervall och underliggande sökning.
+            </p>
+          </div>
+          <Button
+            onClick={() => setCreateModalOpen(true)}
+            disabled={savedSearches.length === 0}
+            title={savedSearches.length === 0 ? "Du behöver spara en sökning först" : undefined}
+          >
+            Skapa bevakning
+          </Button>
+        </div>
       </div>
 
       {sortedMonitors.length === 0 ? (
         <div className="rounded-xl border border-dashed bg-card/40 p-8 text-center">
           <p className="text-sm text-muted-foreground">
-            Du har inga bevakningar än. Skapa din första genom att spara en sökning och välja alternativet Skapa bevakning.
+            Du har inga bevakningar än. Spara först en sökning och skapa sedan din första bevakning med knappen ovan.
           </p>
-          <Button
-            className="mt-4"
-            variant="outline"
-            type="button"
-            onClick={() => router.push("/app/sok")}
-          >
-            Gå till sökflödet
-          </Button>
         </div>
       ) : (
         <div className="overflow-x-auto rounded-xl border bg-card shadow-sm">
@@ -153,10 +177,6 @@ export function BevakningarClient() {
             <tbody className="divide-y divide-border/70 text-sm">
               {paginatedMonitors.map((monitor) => {
                 const baseSearch = savedSearches.find((item) => item.id === monitor.savedSearchId);
-                const rangeText =
-                  monitor.relativeRange === "custom"
-                    ? `Senaste ${monitor.customRangeDays ?? 1} dagarna`
-                    : monitorRangeLabel[monitor.relativeRange];
                 const isExpanded = expandedId === monitor.id;
                 const isEditing = editingId === monitor.id;
                 const filterSummary = baseSearch ? summarizeFilters(baseSearch.filters) : [];
@@ -199,53 +219,6 @@ export function BevakningarClient() {
                               </Select>
                             </div>
                           </div>
-                          <div className="grid gap-4 md:grid-cols-2">
-                            <div className="space-y-2">
-                              <label className="text-sm font-medium" htmlFor={`edit-time-${monitor.id}`}>
-                                Tidpunkt
-                              </label>
-                              <Input
-                                id={`edit-time-${monitor.id}`}
-                                type="time"
-                                value={editForm.timeOfDay}
-                                onChange={(e) => setEditForm((prev) => ({ ...prev, timeOfDay: e.target.value }))}
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <label className="text-sm font-medium" htmlFor={`edit-range-${monitor.id}`}>
-                                Resultatintervall
-                              </label>
-                              <Select
-                                id={`edit-range-${monitor.id}`}
-                                value={editForm.relativeRange}
-                                onChange={(e) =>
-                                  setEditForm((prev) => ({ ...prev, relativeRange: e.target.value as typeof prev.relativeRange }))
-                                }
-                              >
-                                <option value="24h">Senaste 24 timmarna</option>
-                                <option value="7d">Senaste 7 dagarna</option>
-                                <option value="30d">Senaste 30 dagarna</option>
-                                <option value="custom">Anpassat intervall</option>
-                              </Select>
-                              {editForm.relativeRange === "custom" ? (
-                                <div className="grid grid-cols-[auto_1fr] items-center gap-2 text-sm text-muted-foreground">
-                                  <span className="text-sm font-medium text-foreground">Dagintervall</span>
-                                  <Input
-                                    type="number"
-                                    min={1}
-                                    max={90}
-                                    value={editForm.customRangeDays}
-                                    onChange={(e) =>
-                                      setEditForm((prev) => ({
-                                        ...prev,
-                                        customRangeDays: Number(e.target.value) || 1,
-                                      }))
-                                    }
-                                  />
-                                </div>
-                              ) : null}
-                            </div>
-                          </div>
                           {savedSearches.length > 0 ? (
                             <div className="rounded-md border bg-muted/40 p-3 text-sm">
                               <p className="font-medium text-foreground">Filteröversikt</p>
@@ -282,7 +255,6 @@ export function BevakningarClient() {
                   <tr key={monitor.id} className="hover:bg-muted/40">
                     <td className="px-4 py-3 align-top">
                       <div className="font-medium text-foreground">{monitor.name}</div>
-                      <p className="text-xs text-muted-foreground">{rangeText}</p>
                       <p className="text-xs text-muted-foreground">Baserad på: {baseSearch?.name ?? "Sökning borttagen"}</p>
                     </td>
                     <td className="px-4 py-3 align-center w-16">
@@ -292,7 +264,7 @@ export function BevakningarClient() {
                       />
                     </td>
                     <td className="hidden md:table-cell px-4 py-3 align-top text-muted-foreground">
-                      {monitorFrequencyLabel[monitor.frequency]} kl. {monitor.timeOfDay}
+                      {monitorFrequencyLabel[monitor.frequency]}
                     </td>
                     <td className="hidden md:table-cell px-4 py-3 align-top text-muted-foreground">{formatDateTime(monitor.lastRunAt)}</td>
                     <td className="px-4 py-3 align-top">
@@ -432,6 +404,77 @@ export function BevakningarClient() {
           </div>
         ) : null
       }
+
+      <Modal
+        open={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        title="Skapa bevakning"
+        description="Välj sparad sökning och hur ofta vi ska skicka nya träffar."
+        footer={
+          <>
+            <Button variant="ghost" type="button" onClick={() => setCreateModalOpen(false)}>
+              Avbryt
+            </Button>
+            <Button type="button" onClick={handleCreateMonitor} disabled={!monitorForm.savedSearchId}>
+              Skapa bevakning
+            </Button>
+          </>
+        }
+      >
+        {monitorForm.savedSearchId ? (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium" htmlFor="monitor-search">
+                Baserad på
+              </label>
+              <Select
+                id="monitor-search"
+                value={monitorForm.savedSearchId}
+                onChange={(e) => setMonitorForm((prev) => ({ ...prev, savedSearchId: e.target.value }))}
+              >
+                {savedSearches.map((search) => (
+                  <option key={search.id} value={search.id}>
+                    {search.name}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <label className="text-sm font-medium" htmlFor="monitor-frequency">
+                  Frekvens
+                </label>
+                <Select
+                  id="monitor-frequency"
+                  value={monitorForm.frequency}
+                  onChange={(e) =>
+                    setMonitorForm((prev) => ({ ...prev, frequency: e.target.value as "daily" | "weekly" }))
+                  }
+                >
+                  <option value="daily">Dagligen</option>
+                  <option value="weekly">Veckovis</option>
+                </Select>
+              </div>
+            </div>
+            {selectedSavedSearch ? (
+              <div className="rounded-md border bg-muted/40 p-3 text-sm">
+                <p className="font-medium text-foreground">Filteröversikt</p>
+                <ul className="mt-2 flex flex-wrap gap-2">
+                  {summarizeFilters(selectedSavedSearch.filters).map((item) => (
+                    <li key={`${selectedSavedSearch.id}-${item.label}`} className="rounded-full bg-card px-3 py-1 text-xs text-muted-foreground">
+                      <span className="font-medium text-foreground">{item.label}:</span> {item.value}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            Du behöver spara en sökning innan du kan skapa bevakningar.
+          </p>
+        )}
+      </Modal>
     </div >
   );
 }

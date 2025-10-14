@@ -43,16 +43,11 @@ export type MonitorFrequency = "daily" | "weekly";
 
 export type MonitorStatus = "active" | "paused";
 
-export type MonitorRange = "24h" | "7d" | "30d" | "custom";
-
 export type SearchMonitor = {
   id: string;
   name: string;
   savedSearchId: string;
   frequency: MonitorFrequency;
-  timeOfDay: string;
-  relativeRange: MonitorRange;
-  customRangeDays?: number;
   createdAt: string;
   lastRunAt?: string;
   status: MonitorStatus;
