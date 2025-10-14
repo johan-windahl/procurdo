@@ -3,12 +3,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Modal } from "@/components/ui/modal";
 import { Select } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { useSearchPreferences } from "@/components/app/providers/SearchPreferencesProvider";
 import { useToast } from "@/components/ui/toast";
-import { filtersToQueryString, monitorFrequencyLabel, monitorRangeLabel, summarizeFilters } from "@/lib/search/utils";
+import {
+  filtersToQueryString,
+  monitorFrequencyLabel,
+  monitorRangeLabel,
+  summarizeFilters,
+} from "@/lib/search/utils";
 
 const dateFormatter = new Intl.DateTimeFormat("sv-SE", { dateStyle: "medium", timeStyle: "short" });
 
@@ -24,9 +28,18 @@ export function BevakningarClient() {
   const { push } = useToast();
   const { monitors, savedSearches, updateMonitor, deleteMonitor, toggleMonitorStatus } = useSearchPreferences();
 
-  const [previewId, setPreviewId] = useState<string | null>(null);
-  const [editId, setEditId] = useState<string | null>(null);
-  const [editModalOpen, setEditModalOpen] = useState(false);
+  const sortedMonitors = useMemo(
+    () => [...monitors].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
+    [monitors],
+  );
+
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
+  const totalPages = Math.max(1, Math.ceil(sortedMonitors.length / pageSize));
+  const paginatedMonitors = sortedMonitors.slice((page - 1) * pageSize, page * pageSize);
+
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({
     savedSearchId: "",
     frequency: "daily" as "daily" | "weekly",
@@ -34,15 +47,6 @@ export function BevakningarClient() {
     relativeRange: "24h" as "24h" | "7d" | "30d" | "custom",
     customRangeDays: 7,
   });
-
-  const sortedMonitors = useMemo(
-    () => [...monitors].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
-    [monitors],
-  );
-  const [page, setPage] = useState(1);
-  const pageSize = 10;
-  const totalPages = Math.max(1, Math.ceil(sortedMonitors.length / pageSize));
-  const paginatedMonitors = sortedMonitors.slice((page - 1) * pageSize, page * pageSize);
 
   useEffect(() => {
     setPage(1);
@@ -52,10 +56,9 @@ export function BevakningarClient() {
     if (page > totalPages) setPage(totalPages);
   }, [page, totalPages]);
 
-  const startEdit = (id: string) => {
+  const openEdit = (id: string) => {
     const monitor = monitors.find((item) => item.id === id);
     if (!monitor) return;
-    setEditId(id);
     setEditForm({
       savedSearchId: monitor.savedSearchId,
       frequency: monitor.frequency,
@@ -63,16 +66,20 @@ export function BevakningarClient() {
       relativeRange: monitor.relativeRange,
       customRangeDays: monitor.customRangeDays ?? 7,
     });
-    setEditModalOpen(true);
+    setEditingId(id);
+  };
+
+  const closeEdit = () => {
+    setEditingId(null);
   };
 
   const handleUpdate = () => {
-    if (!editId) return;
-    const monitor = monitors.find((item) => item.id === editId);
+    if (!editingId) return;
+    const monitor = monitors.find((item) => item.id === editingId);
     if (!monitor) return;
     const search = savedSearches.find((item) => item.id === editForm.savedSearchId);
     const derivedName = search ? `${search.name} (${monitorFrequencyLabel[editForm.frequency]})` : monitor.name;
-    updateMonitor(editId, {
+    updateMonitor(editingId, {
       savedSearchId: editForm.savedSearchId,
       frequency: editForm.frequency,
       timeOfDay: editForm.timeOfDay,
@@ -80,7 +87,7 @@ export function BevakningarClient() {
       customRangeDays: editForm.relativeRange === "custom" ? Math.max(1, Number(editForm.customRangeDays) || 1) : undefined,
       name: derivedName,
     });
-    setEditModalOpen(false);
+    setEditingId(null);
     push({ title: "Bevakning uppdaterad" });
   };
 
@@ -106,9 +113,6 @@ export function BevakningarClient() {
     const query = filtersToQueryString(search.filters);
     router.push(`/app/sok${query}`);
   };
-
-  const previewMonitor = previewId ? monitors.find((item) => item.id === previewId) : null;
-  const previewSearch = previewMonitor ? savedSearches.find((item) => item.id === previewMonitor.savedSearchId) : null;
 
   return (
     <div className="space-y-6">
@@ -139,10 +143,9 @@ export function BevakningarClient() {
             <thead className="bg-muted/60 text-left text-sm font-medium text-muted-foreground">
               <tr>
                 <th className="px-4 py-3">Namn</th>
-                <th className="px-4 py-3">Baserad på</th>
+                <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Frekvens</th>
                 <th className="px-4 py-3">Senaste körning</th>
-                <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3 text-right">Åtgärder</th>
               </tr>
             </thead>
@@ -153,48 +156,170 @@ export function BevakningarClient() {
                   monitor.relativeRange === "custom"
                     ? `Senaste ${monitor.customRangeDays ?? 1} dagarna`
                     : monitorRangeLabel[monitor.relativeRange];
-                return (
+                const isExpanded = expandedId === monitor.id;
+                const isEditing = editingId === monitor.id;
+                const filterSummary = baseSearch ? summarizeFilters(baseSearch.filters) : [];
+
+                if (isEditing) {
+                  return (
+                    <tr key={monitor.id}>
+                      <td colSpan={5} className="px-4 py-6">
+                        <div className="space-y-6">
+                          <div className="grid gap-4 md:grid-cols-2">
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium" htmlFor={`edit-saved-search-${monitor.id}`}>
+                                Baserad på
+                              </label>
+                              <Select
+                                id={`edit-saved-search-${monitor.id}`}
+                                value={editForm.savedSearchId}
+                                onChange={(e) => setEditForm((prev) => ({ ...prev, savedSearchId: e.target.value }))}
+                              >
+                                {savedSearches.map((search) => (
+                                  <option key={search.id} value={search.id}>
+                                    {search.name}
+                                  </option>
+                                ))}
+                              </Select>
+                            </div>
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium" htmlFor={`edit-frequency-${monitor.id}`}>
+                                Frekvens
+                              </label>
+                              <Select
+                                id={`edit-frequency-${monitor.id}`}
+                                value={editForm.frequency}
+                                onChange={(e) =>
+                                  setEditForm((prev) => ({ ...prev, frequency: e.target.value as "daily" | "weekly" }))
+                                }
+                              >
+                                <option value="daily">Dagligen</option>
+                                <option value="weekly">Veckovis</option>
+                              </Select>
+                            </div>
+                          </div>
+                          <div className="grid gap-4 md:grid-cols-2">
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium" htmlFor={`edit-time-${monitor.id}`}>
+                                Tidpunkt
+                              </label>
+                              <Input
+                                id={`edit-time-${monitor.id}`}
+                                type="time"
+                                value={editForm.timeOfDay}
+                                onChange={(e) => setEditForm((prev) => ({ ...prev, timeOfDay: e.target.value }))}
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium" htmlFor={`edit-range-${monitor.id}`}>
+                                Resultatintervall
+                              </label>
+                              <Select
+                                id={`edit-range-${monitor.id}`}
+                                value={editForm.relativeRange}
+                                onChange={(e) =>
+                                  setEditForm((prev) => ({ ...prev, relativeRange: e.target.value as typeof prev.relativeRange }))
+                                }
+                              >
+                                <option value="24h">Senaste 24 timmarna</option>
+                                <option value="7d">Senaste 7 dagarna</option>
+                                <option value="30d">Senaste 30 dagarna</option>
+                                <option value="custom">Anpassat intervall</option>
+                              </Select>
+                              {editForm.relativeRange === "custom" ? (
+                                <div className="grid grid-cols-[auto_1fr] items-center gap-2 text-sm text-muted-foreground">
+                                  <span className="text-sm font-medium text-foreground">Dagintervall</span>
+                                  <Input
+                                    type="number"
+                                    min={1}
+                                    max={90}
+                                    value={editForm.customRangeDays}
+                                    onChange={(e) =>
+                                      setEditForm((prev) => ({
+                                        ...prev,
+                                        customRangeDays: Number(e.target.value) || 1,
+                                      }))
+                                    }
+                                  />
+                                </div>
+                              ) : null}
+                            </div>
+                          </div>
+                          {savedSearches.length > 0 ? (
+                            <div className="rounded-md border bg-muted/40 p-3 text-sm">
+                              <p className="font-medium text-foreground">Filteröversikt</p>
+                              <ul className="mt-2 flex flex-wrap gap-2">
+                                {summarizeFilters(
+                                  savedSearches.find((search) => search.id === editForm.savedSearchId)?.filters ??
+                                  savedSearches[0]!.filters,
+                                ).map((item) => (
+                                  <li
+                                    key={`${editForm.savedSearchId}-${item.label}`}
+                                    className="rounded-full bg-card px-3 py-1 text-xs text-muted-foreground"
+                                  >
+                                    <span className="font-medium text-foreground">{item.label}:</span> {item.value}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ) : null}
+                          <div className="flex justify-end gap-2">
+                            <Button variant="ghost" type="button" onClick={closeEdit}>
+                              Avbryt
+                            </Button>
+                            <Button type="button" onClick={handleUpdate}>
+                              Spara ändringar
+                            </Button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                }
+
+                return [
                   <tr key={monitor.id} className="hover:bg-muted/40">
                     <td className="px-4 py-3 align-top">
                       <div className="font-medium text-foreground">{monitor.name}</div>
                       <p className="text-xs text-muted-foreground">{rangeText}</p>
+                      <p className="text-xs text-muted-foreground">Baserad på: {baseSearch?.name ?? "Sökning borttagen"}</p>
                     </td>
                     <td className="px-4 py-3 align-top">
-                      <div className="font-medium text-foreground">{baseSearch?.name ?? "Sökning borttagen"}</div>
-                      {baseSearch ? (
-                        <button
-                          type="button"
-                          className="text-xs text-primary underline-offset-4 hover:underline"
-                          onClick={() => handleRun(baseSearch.id)}
-                        >
-                          Öppna sökningen
-                        </button>
-                      ) : null}
+                      <span
+                        className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${monitor.status === "active" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+                          }`}
+                      >
+                        {monitor.status === "active" ? "Aktiv" : "Pausad"}
+                      </span>
                     </td>
                     <td className="px-4 py-3 align-top text-muted-foreground">
                       {monitorFrequencyLabel[monitor.frequency]} kl. {monitor.timeOfDay}
                     </td>
                     <td className="px-4 py-3 align-top text-muted-foreground">{formatDateTime(monitor.lastRunAt)}</td>
                     <td className="px-4 py-3 align-top">
-                      <span
-                        className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${monitor.status === "active"
-                          ? "bg-emerald-100 text-emerald-700"
-                          : "bg-amber-100 text-amber-700"
-                          }`}
-                      >
-                        {monitor.status === "active" ? "Aktiv" : "Pausad"}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 align-top">
                       <div className="flex justify-end gap-2">
-                        <Button variant="ghost" size="sm" type="button" onClick={() => setPreviewId(monitor.id)}>
-                          Förhandsgranska
+                        {baseSearch ? (
+                          <Button variant="outline" size="sm" type="button" onClick={() => handleRun(baseSearch.id)}>
+                            Öppna sökning
+                          </Button>
+                        ) : null}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          type="button"
+                          onClick={() => setExpandedId((prev) => (prev === monitor.id ? null : monitor.id))}
+                        >
+                          {isExpanded ? "Dölj resultat" : "Visa senaste resultat"}
                         </Button>
-                        <Button variant="ghost" size="sm" type="button" onClick={() => startEdit(monitor.id)}>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          type="button"
+                          onClick={() => (isEditing ? closeEdit() : openEdit(monitor.id))}
+                        >
                           Redigera
                         </Button>
                         <Button
-                          className="w-20 justify-center"
                           variant="ghost"
                           size="sm"
                           type="button"
@@ -213,188 +338,86 @@ export function BevakningarClient() {
                         </Button>
                       </div>
                     </td>
-                  </tr>
-                );
+                  </tr>,
+                  ...(isExpanded ? [
+                    <tr key={`${monitor.id}-expanded`}>
+                      <td colSpan={5} className="px-4 py-4">
+                        <div className="space-y-4 rounded-xl border border-dashed bg-muted/20 p-4">
+                          <h3 className="text-sm font-semibold text-foreground">Senaste resultat</h3>
+                          {monitor.latestNotices && monitor.latestNotices.length > 0 ? (
+                            <ul className="space-y-3">
+                              {monitor.latestNotices.slice(0, 5).map((notice) => (
+                                <li key={notice.publicationNumber} className="rounded-lg border bg-background p-4">
+                                  <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                                    <div className="space-y-1">
+                                      <h4 className="text-sm font-semibold text-foreground">
+                                        {notice.documentUrl ? (
+                                          <a href={notice.documentUrl} target="_blank" rel="noreferrer" className="hover:underline">
+                                            {notice.title}
+                                          </a>
+                                        ) : (
+                                          notice.title
+                                        )}
+                                      </h4>
+                                      <p className="text-xs text-muted-foreground">
+                                        {notice.buyerName} • Publicerad {notice.publicationDate}
+                                      </p>
+                                    </div>
+                                    <span className="text-xs text-muted-foreground sm:text-right">
+                                      {notice.publicationNumber}
+                                    </span>
+                                  </div>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p className="text-sm text-muted-foreground">Inga resultat att visa ännu.</p>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ] : [])
+                ];
               })}
             </tbody>
           </table>
         </div>
-      )}
+      )
+      }
 
-      {sortedMonitors.length > pageSize ? (
-        <div className="flex items-center justify-between rounded-lg border bg-card px-4 py-3 text-sm text-muted-foreground">
-          <span>
-            Visar {Math.min((page - 1) * pageSize + 1, sortedMonitors.length)}–
-            {Math.min(page * pageSize, sortedMonitors.length)} av {sortedMonitors.length}
-          </span>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              type="button"
-              disabled={page <= 1}
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-            >
-              Föregående
-            </Button>
+      {
+        sortedMonitors.length > pageSize ? (
+          <div className="flex items-center justify-between rounded-lg border bg-card px-4 py-3 text-sm text-muted-foreground">
             <span>
-              Sida {page} / {totalPages}
+              Visar {Math.min((page - 1) * pageSize + 1, sortedMonitors.length)}–
+              {Math.min(page * pageSize, sortedMonitors.length)} av {sortedMonitors.length}
             </span>
-            <Button
-              variant="ghost"
-              size="sm"
-              type="button"
-              disabled={page >= totalPages}
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            >
-              Nästa
-            </Button>
-          </div>
-        </div>
-      ) : null}
-
-      <Modal
-        open={!!previewMonitor}
-        onClose={() => setPreviewId(null)}
-        title="Senaste resultat"
-        description={previewSearch ? `De fem senaste träffarna för ${previewSearch.name}` : "Inga sparade resultat hittades."}
-        size="lg"
-      >
-        {previewMonitor && previewMonitor.latestNotices && previewMonitor.latestNotices.length > 0 ? (
-          <ul className="space-y-4">
-            {previewMonitor.latestNotices.slice(0, 5).map((notice) => (
-              <li key={notice.publicationNumber} className="rounded-lg border bg-muted/30 p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <h3 className="text-sm font-semibold text-foreground">
-                    {notice.documentUrl ? (
-                      <a href={notice.documentUrl} target="_blank" rel="noreferrer" className="hover:underline">
-                        {notice.title}
-                      </a>
-                    ) : (
-                      notice.title
-                    )}
-                  </h3>
-                  <span className="text-xs text-muted-foreground" title="Publikationsnummer">
-                    {notice.publicationNumber}
-                  </span>
-                </div>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  {notice.buyerName} • Publicerad {notice.publicationDate}
-                </p>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-sm text-muted-foreground">Inga resultat att visa ännu.</p>
-        )}
-      </Modal>
-
-      <Modal
-        open={editModalOpen}
-        onClose={() => setEditModalOpen(false)}
-        title="Redigera bevakning"
-        description="Ändra underliggande sökning, frekvens eller tidsintervall."
-        footer={
-          <>
-            <Button variant="ghost" type="button" onClick={() => setEditModalOpen(false)}>
-              Avbryt
-            </Button>
-            <Button type="button" onClick={handleUpdate}>
-              Spara ändringar
-            </Button>
-          </>
-        }
-      >
-        {editId ? (
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium" htmlFor="edit-saved-search">
-                Baserad på
-              </label>
-              <Select
-                id="edit-saved-search"
-                value={editForm.savedSearchId}
-                onChange={(e) => setEditForm((prev) => ({ ...prev, savedSearchId: e.target.value }))}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                type="button"
+                disabled={page <= 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
               >
-                {savedSearches.map((search) => (
-                  <option key={search.id} value={search.id}>
-                    {search.name}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <label className="text-sm font-medium" htmlFor="edit-frequency">
-                  Frekvens
-                </label>
-                <Select
-                  id="edit-frequency"
-                  value={editForm.frequency}
-                  onChange={(e) => setEditForm((prev) => ({ ...prev, frequency: e.target.value as "daily" | "weekly" }))}
-                >
-                  <option value="daily">Dagligen</option>
-                  <option value="weekly">Veckovis</option>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium" htmlFor="edit-time">
-                  Tidpunkt
-                </label>
-                <Input
-                  id="edit-time"
-                  type="time"
-                  value={editForm.timeOfDay}
-                  onChange={(e) => setEditForm((prev) => ({ ...prev, timeOfDay: e.target.value }))}
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium" htmlFor="edit-range">
-                Resultatintervall
-              </label>
-              <Select
-                id="edit-range"
-                value={editForm.relativeRange}
-                onChange={(e) =>
-                  setEditForm((prev) => ({ ...prev, relativeRange: e.target.value as typeof prev.relativeRange }))
-                }
+                Föregående
+              </Button>
+              <span>
+                Sida {page} / {totalPages}
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                type="button"
+                disabled={page >= totalPages}
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               >
-                <option value="24h">Senaste 24 timmarna</option>
-                <option value="7d">Senaste 7 dagarna</option>
-                <option value="30d">Senaste 30 dagarna</option>
-                <option value="custom">Anpassat intervall</option>
-              </Select>
-              {editForm.relativeRange === "custom" ? (
-                <div className="grid grid-cols-[auto_1fr] items-center gap-2 text-sm text-muted-foreground">
-                  <span className="text-sm font-medium text-foreground">Dagintervall</span>
-                  <Input
-                    type="number"
-                    min={1}
-                    max={90}
-                    value={editForm.customRangeDays}
-                    onChange={(e) => setEditForm((prev) => ({ ...prev, customRangeDays: Number(e.target.value) || 1 }))}
-                  />
-                </div>
-              ) : null}
+                Nästa
+              </Button>
             </div>
-            {savedSearches.length > 0 ? (
-              <div className="rounded-md border bg-muted/40 p-3 text-sm">
-                <p className="font-medium text-foreground">Filteröversikt</p>
-                <ul className="mt-2 flex flex-wrap gap-2">
-                  {summarizeFilters(
-                    savedSearches.find((search) => search.id === editForm.savedSearchId)?.filters ?? savedSearches[0]!.filters,
-                  ).map((item) => (
-                    <li key={`${editForm.savedSearchId}-${item.label}`} className="rounded-full bg-card px-3 py-1 text-xs text-muted-foreground">
-                      <span className="font-medium text-foreground">{item.label}:</span> {item.value}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
           </div>
-        ) : null}
-      </Modal>
-    </div>
+        ) : null
+      }
+    </div >
   );
 }
