@@ -1,5 +1,6 @@
 export type Filters = {
   cpvs: string[];
+  nuts: string[];
   text: string;
   dateFrom: string;
   deadlineTo?: string;

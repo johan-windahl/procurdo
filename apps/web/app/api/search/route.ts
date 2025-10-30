@@ -145,6 +145,12 @@ const buildQuery = (f: Filters) => {
     const cpv = f.cpvs.map((c) => `classification-cpv = ${quote(c)}`).join(" OR ");
     parts.push(`(${cpv})`);
   }
+  // Use selected NUTS codes, or default to SWE (all of Sweden) if none selected
+  const nutsToSearch = Array.isArray(f.nuts) && f.nuts.length > 0
+    ? f.nuts
+    : ['SWE'];
+  const nuts = nutsToSearch.map((n) => quote(n)).join(" ");
+  parts.push(`place-of-performance IN (${nuts})`);
   if (f.text) parts.push(`FT ~ (${quote(f.text)})`);
   if (f.dateFrom) parts.push(`publication-date >= ${formatDateForTED(f.dateFrom)}`);
   else parts.push(`publication-date >= today(-365)`);
@@ -184,7 +190,7 @@ export async function POST(req: NextRequest) {
   try {
     filtersRaw = (await req.json()) as Filters;
   } catch {
-    filtersRaw = { cpvs: [], text: "", dateFrom: "", country: "", city: "" };
+    filtersRaw = { cpvs: [], nuts: [], text: "", dateFrom: "", country: "", city: "" };
   }
 
   const filters = normalizeFilters(filtersRaw);

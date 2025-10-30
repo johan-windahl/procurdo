@@ -10,6 +10,7 @@ import { filtersToSearchParams } from "@/lib/search/utils";
 
 const defaultFilters: Filters = {
   cpvs: [],
+  nuts: [],
   text: "",
   dateFrom: "",
   deadlineTo: "",
@@ -37,8 +38,11 @@ export default function SearchPageClient() {
     if (!searchParams) return {};
     const cpvParam = searchParams.get("cpv");
     const cpvs = cpvParam ? cpvParam.split(",").filter(Boolean) : [];
+    const nutsParam = searchParams.get("nuts");
+    const nuts = nutsParam ? nutsParam.split(",").filter(Boolean) : [];
     return {
       cpvs,
+      nuts,
       text: searchParams.get("q") || "",
       dateFrom: searchParams.get("from") || "",
       deadlineTo: searchParams.get("to") || "",

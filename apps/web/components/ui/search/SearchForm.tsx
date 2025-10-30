@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { CPVSelector } from "@/components/ui/search/CPVSelector";
-import countries from "@/data/countries.json";
+import { NUTSSelector } from "@/components/ui/search/NUTSSelector";
 import { Button } from "@/components/ui/button";
 import { cn, formatThousandsSpaces, normalizeNumericInput } from "@/lib/utils";
 import type { Filters } from "@/lib/search/types";
@@ -18,13 +18,10 @@ type DateMode = "absolute" | "relative";
 type RelativePreset = "1" | "7" | "30" | "90" | "180" | "custom";
 
 export function SearchForm({ onSearch, initial, actions }: Props) {
-  type CountryOption = { code: string; name: string };
-  const countryOptions = countries as CountryOption[];
-
   const normalizedInitial = useMemo(() => normalizeFilters(initial), [initial]);
 
   const [filters, setFilters] = useState<Filters>(normalizedInitial);
-  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(true);
   const [dateMode, setDateMode] = useState<DateMode>("absolute");
   const [relativePreset, setRelativePreset] = useState<RelativePreset>("30");
   const [customRelativeDays, setCustomRelativeDays] = useState(30);
@@ -108,31 +105,14 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
 
   return (
     <form onSubmit={submit} className="space-y-5 rounded-xl border bg-card p-6">
-      <div className="grid gap-4 md:grid-cols-3">
-        <div className="space-y-1 md:col-span-2">
-          <label className="block text-sm font-medium">Sökning</label>
-          <input
-            className="w-full rounded-md border bg-background px-3 py-2 text-sm"
-            value={filters.text}
-            onChange={(e) => update({ text: e.target.value })}
-            placeholder="Ex. it, bygg, konsult..."
-          />
-        </div>
-        <div className="space-y-1">
-          <label className="block text-sm font-medium">Land</label>
-          <select
-            className="w-full rounded-md border bg-background px-3 py-2 text-sm"
-            value={filters.country}
-            onChange={(e) => update({ country: e.target.value })}
-          >
-            <option value="">Alla</option>
-            {countryOptions.map((c) => (
-              <option key={c.code} value={c.code}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div className="space-y-1">
+        <label className="block text-sm font-medium">Sökord</label>
+        <input
+          className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+          value={filters.text}
+          onChange={(e) => update({ text: e.target.value })}
+          placeholder="Ex. it, bygg, konsult..."
+        />
       </div>
 
       <div className="flex items-center justify-between">
@@ -141,7 +121,7 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
           onClick={() => setShowAdvanced((v) => !v)}
           className="text-sm text-muted-foreground hover:text-foreground"
         >
-          {showAdvanced ? "Dölj avancerade filter" : "Visa avancerade filter"}
+          {showAdvanced ? "Dölj filter" : "Visa filter"}
         </button>
       </div>
 
@@ -155,6 +135,13 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
         }}
         aria-hidden={!showAdvanced}
       >
+        <div className="space-y-2">
+          <label className="block text-sm font-medium">Region (NUTS)</label>
+          <div className="text-xs text-muted-foreground mb-1">
+            Välj svenska regioner att filtrera på
+          </div>
+          <NUTSSelector value={filters.nuts} onChange={(nuts) => update({ nuts })} />
+        </div>
         <div className="space-y-2">
           <label className="block text-sm font-medium">CPV-koder</label>
           <CPVSelector value={filters.cpvs} onChange={(cpvs) => update({ cpvs })} />
@@ -229,39 +216,33 @@ export function SearchForm({ onSearch, initial, actions }: Props) {
               )}
             </div>
           </div>
-          <div className="space-y-1">
-            <label className="block text-sm font-medium">Sista anbudsdag senast</label>
-            <input
-              type="date"
-              className="w-full rounded-md border bg-background px-3 py-2 text-sm"
-              value={filters.deadlineTo || ""}
-              onChange={(e) => update({ deadlineTo: e.target.value })}
-            />
+          <div className="space-y-2">
+            <div className="space-y-1">
+              <label className="block text-sm font-medium">Sista anbudsdag</label>
+              <input
+                type="date"
+                className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+                value={filters.deadlineTo || ""}
+                onChange={(e) => update({ deadlineTo: e.target.value })}
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="block text-sm font-medium">Annonstyp</label>
+              <select
+                className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+                value={filters.noticeType || ""}
+                onChange={(e) => update({ noticeType: e.target.value })}
+              >
+                <option value="">Alla</option>
+                {noticeTypeOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-          <div className="space-y-1">
-            <label className="block text-sm font-medium">Ort</label>
-            <input
-              className="w-full rounded-md border bg-background px-3 py-2 text-sm"
-              value={filters.city}
-              onChange={(e) => update({ city: e.target.value })}
-              placeholder="Ex. Stockholm"
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="block text-sm font-medium">Annonstyp</label>
-            <select
-              className="w-full rounded-md border bg-background px-3 py-2 text-sm"
-              value={filters.noticeType || ""}
-              onChange={(e) => update({ noticeType: e.target.value })}
-            >
-              <option value="">Alla</option>
-              {noticeTypeOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
+
           <div className="space-y-1">
             <label className="block text-sm font-medium">Värde (min)</label>
             <input

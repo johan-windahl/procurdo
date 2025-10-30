@@ -75,6 +75,7 @@ export const resolveNoticeTypeLabel = (value: string | undefined | null): string
 
 export const defaultFilters: Filters = {
   cpvs: [],
+  nuts: [],
   text: "",
   dateFrom: "",
   deadlineTo: "",
@@ -112,6 +113,8 @@ export const normalizeFilters = (incoming?: Partial<Filters>): Filters => {
     .map((code) => normalizeCpv(code))
     .filter((code): code is string => Boolean(code));
   const uniqueCpvs = Array.from(new Set(normalizedCpvs));
+  const rawNuts = Array.isArray(incoming?.nuts) ? incoming.nuts : base.nuts;
+  const uniqueNuts = Array.from(new Set(rawNuts.filter(Boolean)));
   const noticeTypeInput = base.noticeType ?? "";
   const noticeType =
     noticeTypeInput && noticeTypeInput.trim()
@@ -120,6 +123,7 @@ export const normalizeFilters = (incoming?: Partial<Filters>): Filters => {
   return {
     ...base,
     cpvs: uniqueCpvs,
+    nuts: uniqueNuts,
     country: normalizeCountry(base.country),
     deadlineTo: base.deadlineTo ?? "",
     noticeType,
@@ -144,6 +148,7 @@ export function filtersToSearchParams(filters: Filters): URLSearchParams {
   const normalized = normalizeFilters(filters);
   const params = new URLSearchParams();
   if (normalized.cpvs.length) params.set("cpv", normalized.cpvs.join(","));
+  if (normalized.nuts.length) params.set("nuts", normalized.nuts.join(","));
   if (normalized.text) params.set("q", normalized.text);
   if (normalized.dateFrom) params.set("from", normalized.dateFrom);
   if (normalized.deadlineTo) params.set("to", normalized.deadlineTo);
@@ -168,8 +173,11 @@ export function filtersToQueryString(filters: Filters): string {
 export function filtersFromSearchParams(params: URLSearchParams): Filters {
   const cpvParam = params.get("cpv");
   const cpvs = cpvParam ? cpvParam.split(",").filter(Boolean) : [];
+  const nutsParam = params.get("nuts");
+  const nuts = nutsParam ? nutsParam.split(",").filter(Boolean) : [];
   return normalizeFilters({
     cpvs,
+    nuts,
     text: params.get("q") || "",
     dateFrom: params.get("from") || "",
     deadlineTo: params.get("to") || "",
@@ -184,8 +192,9 @@ export function filtersFromSearchParams(params: URLSearchParams): Filters {
 export function summarizeFilters(filters: Filters): Array<{ label: string; value: string }> {
   const normalized = normalizeFilters(filters);
   const summary: Array<{ label: string; value: string }> = [];
-  if (normalized.text) summary.push({ label: "Sökning", value: normalized.text });
+  if (normalized.text) summary.push({ label: "Sökord", value: normalized.text });
   if (normalized.cpvs.length) summary.push({ label: "CPV", value: normalized.cpvs.join(", ") });
+  if (normalized.nuts.length) summary.push({ label: "NUTS", value: normalized.nuts.join(", ") });
   if (normalized.country) {
     const countryName = countryLookup.get(normalized.country) ?? normalized.country;
     summary.push({ label: "Land", value: countryName });

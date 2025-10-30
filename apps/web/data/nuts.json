@@ -1,0 +1,194 @@
+[
+  {
+    "code": "SE",
+    "name": "Sverige",
+    "level": 0,
+    "parent": null
+  },
+  {
+    "code": "SE1",
+    "name": "Östra Sverige",
+    "level": 1,
+    "parent": "SE"
+  },
+  {
+    "code": "SE11",
+    "name": "Stockholm",
+    "level": 2,
+    "parent": "SE1"
+  },
+  {
+    "code": "SE110",
+    "name": "Stockholms län",
+    "level": 3,
+    "parent": "SE11"
+  },
+  {
+    "code": "SE12",
+    "name": "Östra Mellansverige",
+    "level": 2,
+    "parent": "SE1"
+  },
+  {
+    "code": "SE121",
+    "name": "Östergötlands län",
+    "level": 3,
+    "parent": "SE12"
+  },
+  {
+    "code": "SE122",
+    "name": "Södermanlands län",
+    "level": 3,
+    "parent": "SE12"
+  },
+  {
+    "code": "SE123",
+    "name": "Örebro län",
+    "level": 3,
+    "parent": "SE12"
+  },
+  {
+    "code": "SE124",
+    "name": "Västmanlands län",
+    "level": 3,
+    "parent": "SE12"
+  },
+  {
+    "code": "SE2",
+    "name": "Södra Sverige",
+    "level": 1,
+    "parent": "SE"
+  },
+  {
+    "code": "SE21",
+    "name": "Småland med öarna",
+    "level": 2,
+    "parent": "SE2"
+  },
+  {
+    "code": "SE211",
+    "name": "Jönköpings län",
+    "level": 3,
+    "parent": "SE21"
+  },
+  {
+    "code": "SE212",
+    "name": "Kronobergs län",
+    "level": 3,
+    "parent": "SE21"
+  },
+  {
+    "code": "SE213",
+    "name": "Kalmar län",
+    "level": 3,
+    "parent": "SE21"
+  },
+  {
+    "code": "SE214",
+    "name": "Gotlands län",
+    "level": 3,
+    "parent": "SE21"
+  },
+  {
+    "code": "SE22",
+    "name": "Sydsverige",
+    "level": 2,
+    "parent": "SE2"
+  },
+  {
+    "code": "SE221",
+    "name": "Blekinge län",
+    "level": 3,
+    "parent": "SE22"
+  },
+  {
+    "code": "SE224",
+    "name": "Skåne län",
+    "level": 3,
+    "parent": "SE22"
+  },
+  {
+    "code": "SE23",
+    "name": "Västsverige",
+    "level": 2,
+    "parent": "SE2"
+  },
+  {
+    "code": "SE231",
+    "name": "Hallands län",
+    "level": 3,
+    "parent": "SE23"
+  },
+  {
+    "code": "SE232",
+    "name": "Västra Götalands län",
+    "level": 3,
+    "parent": "SE23"
+  },
+  {
+    "code": "SE3",
+    "name": "Norra Sverige",
+    "level": 1,
+    "parent": "SE"
+  },
+  {
+    "code": "SE31",
+    "name": "Norra Mellansverige",
+    "level": 2,
+    "parent": "SE3"
+  },
+  {
+    "code": "SE311",
+    "name": "Värmlands län",
+    "level": 3,
+    "parent": "SE31"
+  },
+  {
+    "code": "SE312",
+    "name": "Dalarnas län",
+    "level": 3,
+    "parent": "SE31"
+  },
+  {
+    "code": "SE313",
+    "name": "Gävleborgs län",
+    "level": 3,
+    "parent": "SE31"
+  },
+  {
+    "code": "SE32",
+    "name": "Mellersta Norrland",
+    "level": 2,
+    "parent": "SE3"
+  },
+  {
+    "code": "SE321",
+    "name": "Västernorrlands län",
+    "level": 3,
+    "parent": "SE32"
+  },
+  {
+    "code": "SE322",
+    "name": "Jämtlands län",
+    "level": 3,
+    "parent": "SE32"
+  },
+  {
+    "code": "SE323",
+    "name": "Västerbottens län",
+    "level": 3,
+    "parent": "SE32"
+  },
+  {
+    "code": "SE33",
+    "name": "Övre Norrland",
+    "level": 2,
+    "parent": "SE3"
+  },
+  {
+    "code": "SE331",
+    "name": "Norrbottens län",
+    "level": 3,
+    "parent": "SE33"
+  }
+]

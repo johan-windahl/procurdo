@@ -150,6 +150,7 @@ const initialSavedSearches: SavedSearch[] = [
     description: "Aktuella projekt för digitalisering och systemutveckling",
     filters: {
       cpvs: ["7222300"],
+      nuts: [],
       text: "it konsult",
       dateFrom: "2024-06-01",
       deadlineTo: "",
@@ -168,6 +169,7 @@ const initialSavedSearches: SavedSearch[] = [
     description: "Underhåll och mindre byggprojekt i regionen",
     filters: {
       cpvs: ["45262690"],
+      nuts: [],
       text: "byggservice",
       dateFrom: "2024-05-01",
       deadlineTo: "",
@@ -186,6 +188,7 @@ const initialSavedSearches: SavedSearch[] = [
     description: "SaaS-lösningar för HR och personaladministration",
     filters: {
       cpvs: ["72261000"],
+      nuts: [],
       text: "hr system",
       dateFrom: "2024-04-01",
       deadlineTo: "",
