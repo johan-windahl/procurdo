@@ -28,6 +28,7 @@ export type Notice = {
   noticeType?: string;
   procedureType?: string;
   frameworkAgreement?: boolean;
+  winnerName?: string;
 };
 
 export type SavedSearch = {

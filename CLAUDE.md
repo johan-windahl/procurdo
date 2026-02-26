@@ -41,8 +41,9 @@ pnpm db:migrate:all         # Migrate all configured databases
 
 **Database Tools:**
 ```bash
-pnpm db:studio              # Open Drizzle Studio
-pnpm db:seed                # Seed database with initial data
+pnpm db:studio              # Open Drizzle Studio (main app DB)
+pnpm db:studio:procudo_data_dev # Open Drizzle Studio (data warehouse)
+pnpm db:migrate -- --dry-run # Preview migrations without applying
 ```
 
 ## Architecture
@@ -255,11 +256,11 @@ export const metadata = {
 
 ### Testing and Quality
 
-- ESLint configured for Next.js
+- No test framework configured (no Jest/Vitest) - ESLint and TypeScript are the primary quality gates
 - TypeScript strict mode
 - Drizzle ORM prevents SQL injection
 - Review all SQL diffs in PRs
-- Use least-privilege DB role in production
+- Uses Tailwind CSS v4 (with `@tailwindcss/postcss`, not the v3 plugin)
 
 ### Documentation Location
 

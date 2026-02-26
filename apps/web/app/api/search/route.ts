@@ -32,6 +32,7 @@ type TEDNotice = {
   'description-lot'?: MaybeLang;
   'document-url-lot'?: MaybeLang;
   'document-url-part'?: MaybeLang;
+  'winner-name'?: MaybeLang;
 };
 
 type TEDError = {
@@ -220,6 +221,7 @@ export async function POST(req: NextRequest) {
       'description-lot',
       'document-url-lot',
       'document-url-part',
+      'winner-name',
     ],
   } as const;
 
@@ -298,6 +300,7 @@ export async function POST(req: NextRequest) {
         noticeType: noticeType || undefined,
         procedureType: procedureType || undefined,
         frameworkAgreement: framework ? framework.toLowerCase() === 'true' || framework === 'yes' : undefined,
+        winnerName: extractText(n['winner-name']) || undefined,
       };
     });
 

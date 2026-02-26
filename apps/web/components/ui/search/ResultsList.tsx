@@ -50,6 +50,11 @@ export function ResultsList({ results, page, limit, total, onPage }: Props) {
               <div>
                 <span className="font-medium text-foreground">Köpare:</span> {r.buyerName}
               </div>
+              {r.winnerName ? (
+                <div>
+                  <span className="font-medium text-foreground">Vinnare:</span> {r.winnerName}
+                </div>
+              ) : null}
               <div>
                 <span className="font-medium text-foreground">Plats:</span> {r.buyerCity} {r.country}
               </div>
